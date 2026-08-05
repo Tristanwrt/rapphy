@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  /* Hiérarchie 80/15/5 — luxe discret Sud-Ouest */
+  --color-canvas: #f6f2ea;      /* 80% — lin ivoire, le fond */
+  --color-canvas-deep: #efe9dd; /* variante du canvas pour alterner les sections */
+  --color-ink: #211a13;         /* 15% — encre brun-noir, titres et textes */
+  --color-ink-soft: #5d5344;    /* secondaire — taupe, sous-titres et légendes */
+  --color-brass: #b08d57;       /* 5% — laiton doré, CTA et accents RARES */
+  --color-night: #16241f;       /* sections sombres — vert nuit piscine */
+  --color-night-soft: #1f322b;
+  --color-linen: #fbf9f4;       /* cartes claires */
+
+  --font-display: "Sentient", Georgia, serif;
+  --font-body: "Supreme", system-ui, sans-serif;
+
+  --shadow-soft: 0 20px 60px -24px rgb(33 26 19 / 0.22);
+  --shadow-card: 0 12px 40px -16px rgb(33 26 19 / 0.16);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: #b08d57;
+  color: #fbf9f4;
+}
+
+.section-eyebrow {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #b08d57;
+}
+
+/* Fallback élégant quand une photo n'est pas encore déposée dans /public/images */
+.photo-fallback {
+  background:
+    radial-gradient(120% 90% at 20% 10%, rgb(176 141 87 / 0.35), transparent 55%),
+    radial-gradient(120% 100% at 85% 90%, rgb(31 50 43 / 0.55), transparent 60%),
+    linear-gradient(160deg, #1f322b 0%, #16241f 55%, #211a13 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
