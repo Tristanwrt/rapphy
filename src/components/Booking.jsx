@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Reveal } from './Reveal.jsx'
 import { Icon } from './Icon.jsx'
 import { VILLA, PERIODES_RESERVEES, NUITS_MINIMUM } from '../config/villa.js'
+import { useBooking } from '../context/BookingContext.jsx'
 
 const MOIS = [
   'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
@@ -105,10 +106,8 @@ function Mois({ annee, mois, arrivee, depart, survol, onPick, onHover }) {
 export function Booking() {
   const maintenant = new Date()
   const [vue, setVue] = useState({ annee: maintenant.getFullYear(), mois: maintenant.getMonth() })
-  const [arrivee, setArrivee] = useState(null)
-  const [depart, setDepart] = useState(null)
+  const { arrivee, setArrivee, depart, setDepart, voyageurs, setVoyageurs } = useBooking()
   const [survol, setSurvol] = useState(null)
-  const [voyageurs, setVoyageurs] = useState(4)
   const [erreur, setErreur] = useState('')
 
   const vueSuivante = useMemo(() => {

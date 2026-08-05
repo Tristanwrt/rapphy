@@ -2,43 +2,43 @@ import { Reveal, Stagger, StaggerItem } from './Reveal.jsx'
 import { Icon } from './Icon.jsx'
 import { VILLA } from '../config/villa.js'
 
-// Avis réels de voyageurs, publiés sur les plateformes de réservation.
+// Avis réels de voyageurs, publiés sur l'annonce Airbnb de la villa.
 const AVIS = [
   {
     texte:
-      'Confort optimal et propreté sont au rendez-vous. Rien ne manque, tout est prévu.',
-    auteur: 'Voyageur vérifié',
-    source: 'Expedia · 10/10 Exceptionnel',
-    date: 'Août 2024',
+      'Excellent séjour. Magnifique maison. Intérieur et extérieur conformes à la description. Une bulle de dépaysement. Merci à nos hôtes pour leur réactivité et leur bienveillance. Nous recommandons ce lieu à 400 pour cent.',
+    auteur: 'Virginie',
+    source: 'Airbnb',
+    date: 'Mai 2026',
   },
   {
     texte:
-      "Accueil très chaleureux de Patrick et son épouse, avec un panier de fruits et légumes frais offert à l'arrivée. Une attention qui change tout.",
-    auteur: 'Voyageur vérifié',
-    source: 'Expedia',
-    date: 'Été 2024',
+      "Tout était réuni pour passer un très bon séjour : une literie impeccable, des équipements de qualité et un logement parfaitement agréable. Mention spéciale pour les huîtres et crevettes ultra fraîches commandées directement auprès de Stéphane, livrées ouvertes et prêtes à déguster. Des hôtes attentionnés et disponibles.",
+    auteur: 'Déborah',
+    source: 'Airbnb',
+    date: 'Mai 2026',
   },
   {
     texte:
-      'Très belle propriété et des hôtes adorables. Une ambiance dépaysante le soir avec les éclairages de la piscine.',
-    auteur: 'Voyageur international',
-    source: 'Expedia · avis traduit',
-    date: '2024',
+      'La maison de Stéphane est pratique et assez spacieuse pour être à 8 personnes. Les extérieurs sont topissime !! Je recommande vivement.',
+    auteur: 'Benoit',
+    source: 'Airbnb',
+    date: 'Mai 2025',
   },
   {
     texte:
-      'Nous avons adoré la piscine, le coin repas extérieur et le terrain de pétanque. Communication parfaite avec des hôtes très sympathiques : nous recommandons à 100 %.',
-    auteur: 'Voyageur vérifié',
-    source: 'Vrbo · avis traduit',
-    date: '2024',
+      "Maison intérieur et extérieur magique, je reviendrai. Des personnes très accueillantes, nous avons passé un week-end au top.",
+    auteur: 'Benny',
+    source: 'Airbnb',
+    date: 'Mai 2026',
   },
 ]
 
 const BADGES = [
-  { valeur: '10/10', label: '« Exceptionnel » sur Expedia' },
-  { valeur: 'Top', label: 'villa la mieux notée sur Vrbo' },
-  { valeur: '47G9070', label: 'classée Gîtes de France' },
-  { valeur: '100 %', label: 'des voyageurs recommandent' },
+  { valeur: '4,86/5', label: 'sur Airbnb · Coup de cœur voyageurs' },
+  { valeur: '5/5', label: 'sur Google' },
+  { valeur: '5,0', label: 'en propreté, arrivée et qualité-prix' },
+  { valeur: '100 %', label: 'de réponse, en moins d’une heure' },
 ]
 
 export function Avis() {
@@ -64,7 +64,7 @@ export function Avis() {
 
         <Stagger className="grid gap-7 md:grid-cols-2" gap={0.12}>
           {AVIS.map((a) => (
-            <StaggerItem key={a.texte}>
+            <StaggerItem key={a.auteur}>
               <figure className="relative h-full rounded-2xl bg-linen p-8 shadow-card">
                 <Icon name="quote" className="absolute right-7 top-7 h-8 w-8 text-brass/25" />
                 <div className="mb-4 flex gap-1 text-brass">
@@ -78,7 +78,7 @@ export function Avis() {
                 <figcaption className="mt-5 text-sm text-ink-soft">
                   <span className="font-medium text-ink">{a.auteur}</span> · {a.date}
                   <span className="mt-0.5 block text-xs uppercase tracking-wider text-brass">
-                    {a.source}
+                    Avis 5 étoiles · {a.source}
                   </span>
                 </figcaption>
               </figure>
@@ -93,7 +93,7 @@ export function Avis() {
             rel="noopener noreferrer"
             className="text-sm text-ink-soft underline decoration-brass/50 underline-offset-4 transition-colors hover:text-brass"
           >
-            Voir aussi tous les avis sur Airbnb
+            Voir les 7 commentaires sur Airbnb
           </a>
         </Reveal>
       </div>

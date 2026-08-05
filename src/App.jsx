@@ -1,9 +1,11 @@
 import { Nav } from './components/Nav.jsx'
 import { Hero } from './components/Hero.jsx'
 import { DirectBanner } from './components/DirectBanner.jsx'
+import { VisiteGuidee } from './components/VisiteGuidee.jsx'
 import { Stats } from './components/Stats.jsx'
 import { Villa } from './components/Villa.jsx'
 import { Chambres } from './components/Chambres.jsx'
+import { Sejours } from './components/Sejours.jsx'
 import { Exterieurs } from './components/Exterieurs.jsx'
 import { BienEtre } from './components/BienEtre.jsx'
 import { Avis } from './components/Avis.jsx'
@@ -20,8 +22,10 @@ export default function App() {
         <Hero />
         <Stats />
         <DirectBanner />
+        <VisiteGuidee />
         <Villa />
         <Chambres />
+        <Sejours />
         <Exterieurs />
         <BienEtre />
         <Avis />

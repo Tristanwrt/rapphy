@@ -13,7 +13,7 @@ const AVANTAGES = [
     icon: 'phone',
     titre: 'Un échange direct avec vos hôtes',
     texte:
-      'Patrick et son épouse vous répondent personnellement, vous conseillent et préparent votre arrivée — panier de produits frais compris.',
+      "Stéphane & Sophie vous répondent personnellement, en moins d'une heure (100 % de taux de réponse). Petites attentions sur demande — jusqu'aux huîtres et crevettes fraîches livrées à la villa.",
   },
   {
     icon: 'calendar',

@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
 import { Icon } from './Icon.jsx'
+import { SearchBar } from './SearchBar.jsx'
 
 export function Hero() {
   const ref = useRef(null)
@@ -50,30 +51,23 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.45 }}
           className="mt-5 max-w-xl text-lg text-linen/85"
         >
-          Villa de 180 m² pour 8 voyageurs — piscine avec bar immergé, jacuzzi,
-          salle de sport et cinéma privé, sur 2300 m² de nature clôturée.
+          Villa de 180 m² pour 8 voyageurs — piscine, jacuzzi, plage privée de
+          sable fin, salle de sport et cinéma privé, sur 2300 m² de nature clôturée.
         </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-9 flex flex-wrap items-center gap-4"
+        {/* Barre de recherche type Airbnb : le CTA principal */}
+        <SearchBar />
+
+        <motion.a
+          href="#villa"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="group mt-5 inline-flex items-center gap-2 text-sm text-linen/80 transition-colors hover:text-brass"
         >
-          <a
-            href="#reserver"
-            className="group flex items-center gap-2.5 rounded-full bg-brass px-7 py-3.5 font-medium text-linen shadow-soft transition-transform duration-200 hover:scale-[1.04]"
-          >
-            Vérifier les disponibilités
-            <Icon name="arrow" className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </a>
-          <a
-            href="#villa"
-            className="rounded-full border border-linen/40 px-7 py-3.5 text-linen backdrop-blur-sm transition-colors duration-200 hover:border-brass hover:text-brass"
-          >
-            Découvrir la villa
-          </a>
-        </motion.div>
+          Ou commencez par découvrir la villa
+          <Icon name="arrow" className="h-3.5 w-3.5 rotate-90 transition-transform duration-200 group-hover:translate-y-0.5" />
+        </motion.a>
 
         {/* Preuve sociale immédiate */}
         <motion.div
@@ -88,11 +82,11 @@ export function Hero() {
                 <Icon key={i} name="star" className="h-3.5 w-3.5 fill-current" />
               ))}
             </span>
-            10/10 « Exceptionnel » sur Expedia
+            4,86/5 · Coup de cœur voyageurs Airbnb
           </span>
           <span className="flex items-center gap-2">
             <Icon name="shield" className="h-4 w-4 text-brass" />
-            Gîtes de France n°47G9070
+            Noté 5 étoiles sur Google · Gîtes de France
           </span>
           <span className="flex items-center gap-2">
             <Icon name="check" className="h-4 w-4 text-brass" />

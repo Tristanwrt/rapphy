@@ -7,6 +7,7 @@
 export const VILLA = {
   nom: "Villa Raffy",
   signature: "Oasis d'exception",
+  hotes: "Stéphane & Sophie",
   adresse: "3 rue Georges Bouyssou, 47340 Saint-Robert",
   commune: "Saint-Robert, Lot-et-Garonne",
   telephoneFixe: "05 53 47 80 87",

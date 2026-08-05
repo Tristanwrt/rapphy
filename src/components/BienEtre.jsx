@@ -36,14 +36,14 @@ export function BienEtre() {
           </p>
           <p className="mt-4 leading-relaxed text-ink-soft">
             Le soir venu, l'écran géant de 3m50 réunit tout le monde pour une séance de
-            cinéma en famille, un match entre amis ou une soirée série sous un plaid.
-            La fibre et Canal+ sont inclus.
+            cinéma en famille, un match entre amis ou une session PlayStation. La fibre,
+            Canal+ et la console sont inclus.
           </p>
           <ul className="mt-8 space-y-3">
             {[
               "Vélo d'appartement, elliptique et rameur",
               'Banc de musculation et tapis de gym',
-              'Écran géant 3m50, fibre & Canal+',
+              'Écran géant 3m50, fibre, Canal+ & PlayStation',
               "Cheminée pour les soirées d'hiver",
             ].map((item) => (
               <li key={item} className="flex items-center gap-3 text-[0.95rem]">

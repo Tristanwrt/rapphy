@@ -9,7 +9,7 @@ const QUESTIONS = [
   },
   {
     q: 'Combien de personnes la villa peut-elle accueillir ?',
-    r: "La villa accueille jusqu'à 8 voyageurs dans 4 chambres, toutes équipées de lits 160 × 200 (la suite de l'étage dispose de 2 lits électriques 80 cm modulables en lit double). Chaque espace nuit a sa salle de bain ou salle d'eau.",
+    r: "La villa accueille jusqu'à 8 voyageurs dans 4 chambres, toutes équipées de lits 160 × 200 (la suite de l'étage dispose de 2 lits électriques 80 cm modulables en lit double). Chaque espace nuit a sa salle de bain ou salle d'eau, et un lit bébé est disponible. En basse saison, la version cocooning accueille 2 à 4 personnes à tarif doux.",
   },
   {
     q: 'La piscine est-elle adaptée aux enfants ?',
@@ -17,11 +17,19 @@ const QUESTIONS = [
   },
   {
     q: 'Les animaux sont-ils acceptés ?',
-    r: 'Oui, vos compagnons sont les bienvenus à la villa. Le terrain clos leur permet de profiter en liberté et en sécurité. Signalez simplement leur présence lors de votre demande de réservation.',
+    r: "Oui, vos compagnons sont acceptés sous conditions : signalez simplement leur présence lors de votre demande de réservation. Le terrain entièrement clos leur permet de profiter en liberté et en sécurité. À noter : les fêtes ne sont pas autorisées.",
+  },
+  {
+    q: "Comment se passe l'arrivée ?",
+    r: "En toute autonomie, avec une boîte à clé sécurisée : vous arrivez quand vous voulez entre 16h et 23h, sans attendre personne. Le départ se fait avant 10h. Les derniers voyageurs ont attribué 5 étoiles sur 5 à la procédure d'arrivée.",
+  },
+  {
+    q: "Qu'est-ce que la version cocooning ?",
+    r: "En basse saison (d'avril à juillet et de septembre à octobre), la villa est proposée en configuration intimiste pour 2 à 4 personnes : deux suites prestige ouvertes avec salles de bain privées, un tarif plus doux, et la villa reste entièrement privatisée — piscine, jacuzzi et extérieurs compris. En haute saison, la villa se réserve en entier pour 8 voyageurs.",
   },
   {
     q: 'Comment réserver en direct et pourquoi est-ce plus avantageux ?',
-    r: "Choisissez vos dates dans le calendrier ci-dessus, puis envoyez votre demande par téléphone, WhatsApp ou email. En direct, vous évitez les frais de service des plateformes (jusqu'à 15 % du séjour) et vous échangez directement avec Patrick et son épouse, vos hôtes.",
+    r: "Choisissez vos dates dans le calendrier ci-dessus, puis envoyez votre demande par téléphone, WhatsApp ou email. En direct, vous évitez les frais de service des plateformes (jusqu'à 15 % du séjour) et vous échangez directement avec Stéphane & Sophie, vos hôtes — 100 % de taux de réponse, en moins d'une heure.",
   },
   {
     q: "Qu'est-ce qui est inclus dans la location ?",

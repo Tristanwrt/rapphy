@@ -3,11 +3,11 @@ import { Photo } from './Photo.jsx'
 import { Icon } from './Icon.jsx'
 
 const EQUIPEMENTS = [
-  { icon: 'film', label: 'Écran géant 3m50 — fibre & Canal+' },
+  { icon: 'film', label: 'Écran géant 3m50 — Canal+ & PlayStation' },
   { icon: 'chef', label: 'Cuisine ouverte équipée avec bar' },
-  { icon: 'wifi', label: 'WiFi fibre très haut débit' },
+  { icon: 'wifi', label: 'WiFi fibre + espace de travail dédié' },
   { icon: 'sun', label: '3 terrasses exposées plein sud' },
-  { icon: 'paw', label: 'Vos animaux sont les bienvenus' },
+  { icon: 'paw', label: 'Animaux acceptés (sous conditions)' },
   { icon: 'shield', label: 'Terrain entièrement clos et privé' },
 ]
 

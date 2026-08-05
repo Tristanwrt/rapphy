@@ -86,11 +86,11 @@ export function Exterieurs() {
                 <Icon name="tree" className="h-5 w-5" />
               </span>
               <div>
-                <h3 className="font-medium text-linen">2300 m² rien que pour vous</h3>
+                <h3 className="font-medium text-linen">Plage privée & jardin exotique</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-linen/70">
-                  Un parc entièrement clos, trois terrasses, un terrain de pétanque et la
-                  campagne à perte de vue. Vos enfants et vos animaux y sont en liberté,
-                  en toute sécurité.
+                  Une plage privée de sable fin pour les bains de soleil, un jardin
+                  exotique et son kiosque zen, un terrain de pétanque — le tout dans un
+                  parc entièrement clos de 2300 m², sans aucun vis-à-vis.
                 </p>
               </div>
             </div>

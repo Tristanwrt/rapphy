@@ -58,6 +58,30 @@ export function Region() {
             </StaggerItem>
           ))}
         </Stagger>
+
+        {/* Carte — Saint-Robert, Nouvelle-Aquitaine */}
+        <Reveal delay={0.1} className="mt-14">
+          <div className="overflow-hidden rounded-3xl bg-linen shadow-soft">
+            <iframe
+              title="Carte — Villa Raffy à Saint-Robert, Lot-et-Garonne"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=0.55%2C44.13%2C1.05%2C44.36&layer=mapnik&marker=44.2469%2C0.8"
+              className="h-80 w-full border-0 lg:h-96"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <div className="flex flex-col items-center justify-between gap-3 px-6 py-5 text-sm text-ink-soft sm:flex-row">
+              <span>Saint-Robert, Nouvelle-Aquitaine, France — entre Agen et Villeneuve-sur-Lot</span>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Saint-Robert+47340+France"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-brass underline-offset-4 hover:underline"
+              >
+                Ouvrir dans Google Maps
+              </a>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

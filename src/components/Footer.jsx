@@ -14,8 +14,8 @@ export function Footer() {
               <span className="italic text-brass"> ici</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-linen/70">
-              Un appel, un message — et la villa est à vous. Patrick et son épouse vous
-              répondent personnellement, tous les jours.
+              Un appel, un message — et la villa est à vous. Stéphane & Sophie vous
+              répondent personnellement, en moins d'une heure.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <a
@@ -89,7 +89,11 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Icon name="star" className="h-4 w-4 text-brass" />
-              10/10 « Exceptionnel » sur Expedia
+              4,86/5 · Coup de cœur voyageurs Airbnb
+            </li>
+            <li className="flex items-center gap-2">
+              <Icon name="star" className="h-4 w-4 text-brass" />
+              Noté 5 étoiles sur Google
             </li>
             <li>
               <a
