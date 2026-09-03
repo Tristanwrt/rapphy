@@ -31,7 +31,7 @@ if ( ! $vr_chambres ) {
 			<?php foreach ( $vr_chambres as $vr_i => $vr_chambre ) : ?>
 				<article class="vr-tile vr-reveal" style="transition-delay:<?php echo esc_attr( $vr_i * 0.1 ); ?>s">
 					<div class="vr-tile__media">
-						<?php vr_image( get_post_thumbnail_id( $vr_chambre ), 'vr-carte', get_the_title( $vr_chambre ), '' ); ?>
+						<?php vr_galerie( $vr_chambre, 'vr-carte', get_the_title( $vr_chambre ) ); ?>
 					</div>
 					<div class="vr-tile__body">
 						<h3 class="vr-h3"><?php echo esc_html( get_the_title( $vr_chambre ) ); ?></h3>

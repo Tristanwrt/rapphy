@@ -16,7 +16,7 @@
 	var estAccueil = document.body.classList.contains( 'home' );
 
 	function surDefilement() {
-		if ( entete && estAccueil ) {
+		if ( entete ) {
 			entete.classList.toggle( 'is-scrolled', window.scrollY > 40 );
 		}
 		// Parallaxe léger de la grande image.
@@ -183,6 +183,49 @@
 			if ( ! ouvert ) {
 				item.classList.add( 'is-open' );
 				bouton.setAttribute( 'aria-expanded', 'true' );
+			}
+		} );
+	} );
+
+	/* ═══════════════════════════════════════════════════
+	   5 bis. GALERIES À FLÈCHES (chambres, espaces)
+	   ═══════════════════════════════════════════════════ */
+
+	document.querySelectorAll( '[data-galerie]' ).forEach( function ( galerie ) {
+		var vues = galerie.querySelectorAll( '.vr-galerie__vue' );
+		var points = galerie.querySelectorAll( '.vr-galerie__point' );
+		var courante = 0;
+
+		if ( vues.length < 2 ) {
+			return;
+		}
+
+		function aller( n ) {
+			vues[ courante ].classList.remove( 'is-active' );
+			if ( points[ courante ] ) {
+				points[ courante ].classList.remove( 'is-active' );
+			}
+			courante = ( n + vues.length ) % vues.length;
+			vues[ courante ].classList.add( 'is-active' );
+			if ( points[ courante ] ) {
+				points[ courante ].classList.add( 'is-active' );
+			}
+		}
+
+		galerie.addEventListener( 'click', function ( e ) {
+			var bouton = e.target.closest( 'button' );
+			if ( ! bouton || ! galerie.contains( bouton ) ) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+
+			if ( bouton.classList.contains( 'vr-galerie__fleche--prec' ) ) {
+				aller( courante - 1 );
+			} else if ( bouton.classList.contains( 'vr-galerie__fleche--suiv' ) ) {
+				aller( courante + 1 );
+			} else if ( bouton.classList.contains( 'vr-galerie__point' ) ) {
+				aller( Array.prototype.indexOf.call( points, bouton ) );
 			}
 		} );
 	} );

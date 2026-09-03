@@ -87,12 +87,8 @@ if ( function_exists( 'vrr_saisons' ) ) {
 
 	<div class="vr-reveal vr-center" style="margin-bottom:48px">
 		<p class="vr-eyebrow">Réservation</p>
-		<h2 class="vr-h2 vr-mx-auto vr-maxw-2xl">Choisissez vos dates, la villa vous attend</h2>
-		<p class="vr-lead vr-mx-auto" style="margin-top:20px;max-width:36rem">
-			Choisissez votre formule, votre arrivée puis votre départ : le tarif s'affiche
-			immédiatement. Votre demande part directement chez vos hôtes — par téléphone,
-			WhatsApp ou email — sans aucune commission.
-		</p>
+		<h2 class="vr-h2 vr-mx-auto vr-maxw-2xl"><?php echo esc_html( get_theme_mod( 'vr_resa_titre', '' ) ); ?></h2>
+		<p class="vr-lead vr-mx-auto" style="margin-top:20px;max-width:36rem"><?php echo esc_html( get_theme_mod( 'vr_resa_texte', '' ) ); ?></p>
 	</div>
 
 	<div class="vr-booking__panel vr-reveal" id="vr-calendrier" data-formule="complete">
@@ -185,10 +181,7 @@ if ( function_exists( 'vrr_saisons' ) ) {
 				<?php endif; ?>
 			</div>
 
-			<p class="vr-booking__note">
-				Réponse rapide et personnelle de vos hôtes. Réserver en direct, c'est le
-				meilleur tarif garanti — sans les frais de service des plateformes.
-			</p>
+			<p class="vr-booking__note"><?php echo esc_html( get_theme_mod( 'vr_resa_note', '' ) ); ?></p>
 		</div>
 
 	</div>

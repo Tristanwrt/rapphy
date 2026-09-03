@@ -32,15 +32,33 @@ Pendant l'installation, choisissez le **français** comme langue du site.
 
 ---
 
-## 4 → Régler la page d'accueil
+## 4 → La page d'accueil et les menus : rien à faire
 
-1 → Allez dans **Réglages → Lecture**.
+À l'activation, le thème crée tout seul :
 
-2 → Cochez **Une page statique**, puis créez ou choisissez une page nommée « Accueil » comme page d'accueil.
+- la page **Accueil**, composée de treize blocs (un par section : grande image, chiffres clés, « Réserver en direct », visite guidée, la villa, les chambres, les formules, piscine & jardin, vidéo, avis, calendrier, la région, FAQ), et la désigne comme page d'accueil ;
+- la page **Journal**, désignée comme page des articles du blog ;
+- les deux menus (**Menu principal** et **Menu du pied de page**), déjà remplis, dans **Apparence → Menus**.
 
-3 → Créez une seconde page nommée « Journal » et désignez-la comme **page des articles** (c'est là que le blog s'affichera).
+Si le thème était déjà installé avant cette version, la même chose se produit à votre prochaine connexion à l'administration, sans écraser une page Accueil déjà remplie.
 
-Le thème détecte automatiquement la page d'accueil et y affiche toutes les sections, dans cet ordre : grande image, chiffres clés, « Réserver en direct », visite guidée, la villa, les chambres, les deux formules de séjour, piscine & jardin, vidéo, avis, calendrier de réservation, la région, FAQ.
+### Modifier l'accueil comme sur Wix
+
+1 → **Pages → Accueil → Modifier** (ou le lien « Modifier les sections de l'accueil » dans la barre du haut quand vous êtes sur le site).
+
+2 → Chaque section porte une étiquette en haut à gauche (« Grande image d'accueil », « Les chambres »…). Cliquez sur une section : ses textes et ses photos apparaissent dans la colonne de droite, onglet **Bloc**. Modifiez, l'aperçu se met à jour sous vos yeux.
+
+3 → Pour **déplacer** une section : les flèches haut/bas de la barre d'outils du bloc, ou glisser-déposer. Pour **supprimer** une section : les trois points → Supprimer. Pour la **remettre** : le bouton « + » → catégorie **Villa Raffy — sections**.
+
+4 → Vous pouvez glisser entre deux sections n'importe quel bloc WordPress classique (paragraphe, image, galerie, colonnes, bouton) : il s'affiche centré, dans la largeur du site.
+
+5 → **Enregistrer** en haut à droite. C'est en ligne.
+
+Un champ laissé vide dans un bloc reprend la valeur de **Apparence → Personnaliser**. Les listes (chambres, espaces, avis, lieux, FAQ) se gèrent toujours dans **Ma villa**. Les sections animées (visite guidée, vidéo, calendrier) s'affichent dans l'éditeur sous forme de carte sombre : elles sont trop lourdes pour y être jouées, mais leurs textes se modifient de la même façon.
+
+### Le menu et le pied de page
+
+**Apparence → Menus** : choisissez « Menu principal » ou « Menu du pied de page », ajoutez, renommez, réordonnez les liens, enregistrez. Le bandeau d'en-tête (le texte sombre au-dessus du menu, le téléphone, l'email) et les colonnes du pied de page se règlent dans **Apparence → Personnaliser → Vos coordonnées** et **→ Pied de page**. Un logo peut remplacer le nom de la villa : **Personnaliser → Identité du site → Logo**.
 
 ---
 
@@ -48,7 +66,7 @@ Le thème détecte automatiquement la page d'accueil et y affiche toutes les sec
 
 Allez dans **Apparence → Personnaliser**. Tout se règle depuis là, sans jamais toucher au code :
 
-- **Vos coordonnées** — téléphone, WhatsApp, email, adresse, lien Airbnb, lien vers vos avis Google (les deux logos de la section Avis renvoient vers ces pages)
+- **Vos coordonnées** — téléphone, WhatsApp, email, adresse, texte du bandeau du haut, lien Airbnb, lien vers vos avis Google (les logos Google et Airbnb de la section Avis et du pied de page renvoient vers ces pages ; les deux liens sont déjà pré-remplis)
 - **Grande image d'accueil** — la photo plein écran et les textes du haut de page
 - **Vos arguments de confiance** — les mentions sous la grande image et les quatre chiffres de la section Avis
 - **Règles de réservation** — nombre de voyageurs maximum, horaires (les prix et les saisons se règlent dans l'extension, voir l'étape 7)
@@ -69,9 +87,10 @@ Pour le lien des avis Google : ouvrez votre fiche Google Maps, cliquez sur « Av
 
 Allez dans **Médias → Ajouter**, déposez toutes les photos d'un coup, puis rattachez-les :
 
-- La photo plein écran : **Apparence → Personnaliser → Grande image d'accueil**
-- Les photos des chambres : **Ma villa → Chambres**, une image mise en avant par chambre
-- Les photos de la visite guidée : **Ma villa → Visite guidée**, une image par espace
+- La photo plein écran : dans la page **Accueil**, bloc « Grande image d'accueil », bouton **Choisir une photo** (ou **Apparence → Personnaliser → Grande image d'accueil**)
+- Les photos des chambres : **Ma villa → Chambres**. L'**image mise en avant** est la photo principale (la chambre) ; l'encadré **Photos supplémentaires** accepte jusqu'à trois autres photos (salle de bain, petit salon…). Sur le site, les visiteurs les font défiler avec des flèches.
+- Les photos de la visite guidée : **Ma villa → Visite guidée**, même principe : une image mise en avant, plus jusqu'à trois photos supplémentaires pour la piscine et son bar immergé, la plage privée…
+- Pour donner un nom à une photo (« Salle de bain », « Le bar immergé »), remplissez sa **légende** dans la médiathèque : elle s'affiche en petit sur la photo.
 
 Les photos de la visite guidée alimentent aussi la galerie de la section « La villa », la mosaïque « Piscine, plage & jardin » (les espaces dont la zone contient « extérieur », « piscine », « jardin » ou « plage ») et le diaporama de la section vidéo : vous ne les déposez qu'une seule fois.
 
@@ -125,7 +144,7 @@ En haut du carnet, un résumé affiche les séjours à venir, le nombre de nuits
 
 ## Ce que voit le propriétaire
 
-Le tableau de bord affiche un encadré « Gérer la Villa Raffy » avec les cinq raccourcis du quotidien : bloquer des dates, voir les réservations, modifier les textes, gérer les photos, écrire un article.
+Le tableau de bord affiche un encadré « Gérer la Villa Raffy » avec les raccourcis du quotidien : modifier les sections de l'accueil, bloquer des dates, voir les réservations, coordonnées et pied de page, chambres et visite guidée, photos, écrire un article.
 
 Les menus techniques inutiles (commentaires, outils) sont masqués pour les comptes non administrateurs. Créez donc le compte de Stéphane avec le rôle **Éditeur**, pas Administrateur.
 

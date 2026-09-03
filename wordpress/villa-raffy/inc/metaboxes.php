@@ -1,6 +1,8 @@
 <?php
 /**
  * Champs personnalisés, écrits à la main pour ne dépendre d'aucune extension payante.
+ * Les chambres et les espaces de la visite guidée acceptent plusieurs photos :
+ * l'image mise en avant, plus une petite galerie (salle de bain, petit salon…).
  *
  * @package VillaRaffy
  */
@@ -10,6 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Nombre maximum de photos supplémentaires par fiche.
+ */
+define( 'VR_GALERIE_MAX', 3 );
+
+/**
  * Description de chaque champ, par type de contenu.
  */
 function vr_champs_par_type() {
@@ -17,8 +24,9 @@ function vr_champs_par_type() {
 		'vr_chambre' => array(
 			'titre'  => 'Détails de la chambre',
 			'champs' => array(
-				'vr_detail' => array( 'label' => 'Ligne de caractéristiques', 'type' => 'text', 'aide' => 'Par exemple : Lit 160 × 200 · salle de bain privée · vue jardin' ),
-				'vr_texte'  => array( 'label' => 'Description', 'type' => 'textarea', 'aide' => 'Deux ou trois phrases qui donnent envie.' ),
+				'vr_detail'  => array( 'label' => 'Ligne de caractéristiques', 'type' => 'text', 'aide' => 'Par exemple : Lit 160 × 200 · salle de bain privée · vue jardin' ),
+				'vr_texte'   => array( 'label' => 'Description', 'type' => 'textarea', 'aide' => 'Deux ou trois phrases qui donnent envie.' ),
+				'vr_galerie' => array( 'label' => 'Photos supplémentaires', 'type' => 'galerie', 'aide' => 'En plus de l\'image mise en avant (la chambre), ajoutez jusqu\'à ' . VR_GALERIE_MAX . ' photos : la salle de bain, le petit salon… Les visiteurs les font défiler avec des flèches. Pour nommer une photo, remplissez sa « légende » dans la médiathèque.' ),
 			),
 		),
 		'vr_espace'  => array(
@@ -32,6 +40,7 @@ function vr_champs_par_type() {
 					'options' => array( 'droite' => 'En glissant sur le côté (même zone)', 'bas' => 'En descendant (nouvelle zone)' ),
 					'aide'    => 'Choisissez « en descendant » pour la première pièce d\'une nouvelle zone.',
 				),
+				'vr_galerie'   => array( 'label' => 'Photos supplémentaires', 'type' => 'galerie', 'aide' => 'En plus de l\'image mise en avant, jusqu\'à ' . VR_GALERIE_MAX . ' photos de cet espace (le bar immergé, la plage sous un autre angle…). Elles défilent dans la visite guidée et dans la mosaïque des extérieurs.' ),
 			),
 		),
 		'vr_avis'    => array(
@@ -62,6 +71,8 @@ function vr_champs_par_type() {
 						'users'    => 'Voyageurs',
 						'ruler'    => 'Surface',
 						'calendar' => 'Calendrier',
+						'dumbbell' => 'Salle de sport',
+						'beach'    => 'Plage',
 					),
 				),
 			),
@@ -85,6 +96,23 @@ function vr_ajouter_metaboxes() {
 	}
 }
 add_action( 'add_meta_boxes', 'vr_ajouter_metaboxes' );
+
+/**
+ * La médiathèque et le petit script des galeries, uniquement sur les fiches concernées.
+ */
+function vr_metabox_assets( $hook ) {
+	if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+		return;
+	}
+	$screen = get_current_screen();
+	if ( ! $screen || ! in_array( $screen->post_type, array( 'vr_chambre', 'vr_espace' ), true ) ) {
+		return;
+	}
+	wp_enqueue_media();
+	wp_enqueue_script( 'vr-galerie-admin', get_template_directory_uri() . '/assets/js/galerie-admin.js', array( 'jquery' ), VR_VERSION, true );
+	wp_localize_script( 'vr-galerie-admin', 'vrGalerie', array( 'max' => VR_GALERIE_MAX ) );
+}
+add_action( 'admin_enqueue_scripts', 'vr_metabox_assets' );
 
 /**
  * Affiche les champs.
@@ -122,6 +150,29 @@ function vr_afficher_metabox( $post ) {
 				);
 			}
 			echo '</select>';
+		} elseif ( 'galerie' === $champ['type'] ) {
+			$ids = array_filter( array_map( 'intval', (array) $valeur ) );
+			echo '<span class="vr-galerie-admin" data-galerie>';
+			echo '<span class="vr-galerie-admin__liste">';
+			foreach ( $ids as $id ) {
+				$vignette = wp_get_attachment_image_url( $id, 'thumbnail' );
+				if ( ! $vignette ) {
+					continue;
+				}
+				printf(
+					'<span class="vr-galerie-admin__item" data-id="%1$d"><img src="%2$s" alt="" /><button type="button" class="vr-galerie-admin__retirer" aria-label="Retirer cette photo">×</button></span>',
+					$id,
+					esc_url( $vignette )
+				);
+			}
+			echo '</span>';
+			printf(
+				'<input type="hidden" id="%1$s" name="%1$s" value="%2$s" class="vr-galerie-admin__valeur" />',
+				esc_attr( $cle ),
+				esc_attr( implode( ',', $ids ) )
+			);
+			echo '<button type="button" class="button vr-galerie-admin__ajouter">Ajouter des photos</button>';
+			echo '</span>';
 		} else {
 			printf(
 				'<input type="text" id="%s" name="%s" value="%s" class="widefat" />',
@@ -167,7 +218,15 @@ function vr_enregistrer_metabox( $post_id ) {
 			continue;
 		}
 		$brut = wp_unslash( $_POST[ $cle ] );
-		$net  = ( 'textarea' === $champ['type'] ) ? sanitize_textarea_field( $brut ) : sanitize_text_field( $brut );
+
+		if ( 'galerie' === $champ['type'] ) {
+			$ids = array_values( array_unique( array_filter( array_map( 'intval', explode( ',', (string) $brut ) ) ) ) );
+			$ids = array_slice( $ids, 0, VR_GALERIE_MAX );
+			update_post_meta( $post_id, $cle, $ids );
+			continue;
+		}
+
+		$net = ( 'textarea' === $champ['type'] ) ? sanitize_textarea_field( $brut ) : sanitize_text_field( $brut );
 		update_post_meta( $post_id, $cle, $net );
 	}
 }

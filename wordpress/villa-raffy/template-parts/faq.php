@@ -16,12 +16,12 @@ if ( ! $vr_questions ) {
 }
 ?>
 
-<section class="vr-section vr-wrap">
+<section class="vr-section vr-wrap" id="faq">
 	<div class="vr-faq">
 
 		<div class="vr-reveal vr-center" style="margin-bottom:40px">
 			<p class="vr-eyebrow">Questions fréquentes</p>
-			<h2 class="vr-h2">Tout ce que vous voulez savoir</h2>
+			<h2 class="vr-h2"><?php echo esc_html( get_theme_mod( 'vr_faq_titre', '' ) ); ?></h2>
 		</div>
 
 		<div class="vr-faq__list">

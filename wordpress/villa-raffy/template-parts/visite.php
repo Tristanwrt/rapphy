@@ -40,7 +40,7 @@ $vr_total = count( $vr_etapes );
 
 		<div class="vr-tour__head">
 			<p class="vr-eyebrow">La visite guidée<span id="vr-tour-zone"></span></p>
-			<h2>Poussez la porte, laissez-vous guider</h2>
+			<h2><?php echo esc_html( get_theme_mod( 'vr_visite_titre', '' ) ); ?></h2>
 		</div>
 
 		<div class="vr-tour__plan" id="vr-tour-plan">
@@ -57,7 +57,7 @@ $vr_total = count( $vr_etapes );
 					data-titre="<?php echo esc_attr( get_the_title( $vr_etape ) ); ?>"
 					data-direction="<?php echo esc_attr( $vr_direction ); ?>">
 
-					<?php vr_image( get_post_thumbnail_id( $vr_etape ), 'vr-hero', get_the_title( $vr_etape ), '' ); ?>
+					<?php vr_galerie( $vr_etape, 'vr-hero', get_the_title( $vr_etape ) ); ?>
 
 					<div class="vr-tour__caption">
 						<div class="vr-tour__caption-inner">

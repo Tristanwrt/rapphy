@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VR_VERSION', '1.1.0' );
+define( 'VR_VERSION', '1.2.0' );
 
 /* ═══════════════════════════════════════════════════════════
    1. RÉGLAGES DU THÈME
@@ -84,6 +84,7 @@ require_once get_template_directory() . '/inc/cpt.php';
 require_once get_template_directory() . '/inc/metaboxes.php';
 require_once get_template_directory() . '/inc/redirections.php';
 require_once get_template_directory() . '/inc/seo.php';
+require_once get_template_directory() . '/inc/blocs.php';
 
 /* ═══════════════════════════════════════════════════════════
    4. FONCTIONS UTILITAIRES
@@ -174,6 +175,83 @@ function vr_icone( $nom, $classe = 'vr-icon' ) {
 }
 
 /**
+ * Logos des plateformes d'avis (Google, Airbnb), avec leur nom.
+ */
+function vr_logo_plateforme( $nom ) {
+	if ( 'google' === $nom ) {
+		echo '<span class="vr-logo vr-logo--google"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></svg><span class="vr-logo__nom">Google</span></span>';
+		return;
+	}
+	if ( 'airbnb' === $nom ) {
+		echo '<span class="vr-logo vr-logo--airbnb"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#FF5A5F" d="M12 2c-1.6 0-2.7.9-3.4 2.4L4.3 14.2c-.9 2-.2 4.4 1.8 5.4 1.7.9 3.7.5 5-1l.9-1 .9 1c1.3 1.5 3.3 1.9 5 1 2-1 2.7-3.4 1.8-5.4L15.4 4.4C14.7 2.9 13.6 2 12 2zm0 4.6c.6 0 1 .3 1.3 1l2.8 6.3-2.7 3.1c-.6.7-1.2 1.1-1.4 1.1s-.8-.4-1.4-1.1L7.9 13.9l2.8-6.3c.3-.7.7-1 1.3-1zm0 3.2a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8z"/></svg><span class="vr-logo__nom">Airbnb</span></span>';
+	}
+}
+
+/**
+ * Les photos d'une fiche : l'image mise en avant, puis la galerie (vr_galerie).
+ */
+function vr_photos( $post, $taille = 'large' ) {
+	$ids       = array();
+	$principal = get_post_thumbnail_id( $post );
+
+	if ( $principal ) {
+		$ids[] = (int) $principal;
+	}
+
+	foreach ( (array) get_post_meta( $post->ID, 'vr_galerie', true ) as $id ) {
+		$id = (int) $id;
+		if ( $id && ! in_array( $id, $ids, true ) && wp_get_attachment_image_url( $id, $taille ) ) {
+			$ids[] = $id;
+		}
+	}
+
+	return $ids;
+}
+
+/**
+ * Affiche les photos d'une fiche : une seule image, ou une petite galerie
+ * à flèches quand la fiche en a plusieurs (chambre, salle de bain, petit salon…).
+ */
+function vr_galerie( $post, $taille = 'vr-carte', $label = '' ) {
+	$ids = vr_photos( $post, $taille );
+
+	if ( count( $ids ) < 2 ) {
+		vr_image( get_post_thumbnail_id( $post ), $taille, $label, '' );
+		return;
+	}
+
+	echo '<div class="vr-galerie" data-galerie>';
+
+	foreach ( $ids as $i => $id ) {
+		$legende = wp_get_attachment_caption( $id );
+		if ( ! $legende ) {
+			$legende = get_post_meta( $id, '_wp_attachment_image_alt', true );
+		}
+		printf(
+			'<figure class="vr-galerie__vue%1$s">%2$s%3$s</figure>',
+			0 === $i ? ' is-active' : '',
+			wp_get_attachment_image( $id, $taille, false, array( 'loading' => 0 === $i ? 'eager' : 'lazy' ) ),
+			$legende ? '<figcaption class="vr-galerie__legende">' . esc_html( $legende ) . '</figcaption>' : ''
+		);
+	}
+
+	echo '<button type="button" class="vr-galerie__fleche vr-galerie__fleche--prec" aria-label="Photo précédente">';
+	vr_icone( 'left', 'vr-icon vr-icon--sm' );
+	echo '</button>';
+	echo '<button type="button" class="vr-galerie__fleche vr-galerie__fleche--suiv" aria-label="Photo suivante">';
+	vr_icone( 'right', 'vr-icon vr-icon--sm' );
+	echo '</button>';
+
+	echo '<div class="vr-galerie__points">';
+	foreach ( $ids as $i => $id ) {
+		printf( '<button type="button" class="vr-galerie__point%s" aria-label="Photo %d"></button>', 0 === $i ? ' is-active' : '', $i + 1 );
+	}
+	echo '</div>';
+
+	echo '</div>';
+}
+
+/**
  * Cinq étoiles pleines, pour les blocs d'avis.
  */
 function vr_etoiles() {
@@ -224,14 +302,17 @@ add_action( 'wp_dashboard_setup', 'vr_nettoyer_widgets_dashboard' );
  */
 function vr_widget_accueil() {
 	wp_add_dashboard_widget( 'vr_accueil', 'Gérer la Villa Raffy', function () {
-		$liens = array(
-			array( 'Voir et bloquer mes dates', admin_url( 'admin.php?page=vr-calendrier' ) ),
+		$accueil = (int) get_option( 'page_on_front' );
+		$liens   = array(
+			array( 'Modifier les sections de la page d\'accueil', $accueil ? get_edit_post_link( $accueil, '' ) : admin_url( 'edit.php?post_type=page' ) ),
+			array( 'Voir et bloquer mes dates', admin_url( 'edit.php?post_type=vr_reservation&page=vr-calendrier' ) ),
 			array( 'Mes réservations', admin_url( 'edit.php?post_type=vr_reservation' ) ),
-			array( 'Modifier les textes et coordonnées', admin_url( 'customize.php' ) ),
+			array( 'Mes coordonnées, menus et pied de page', admin_url( 'customize.php' ) ),
+			array( 'Chambres, visite guidée, avis, lieux', admin_url( 'edit.php?post_type=vr_chambre' ) ),
 			array( 'Mes photos', admin_url( 'upload.php' ) ),
 			array( 'Écrire un article de blog', admin_url( 'post-new.php' ) ),
 		);
-		echo '<p style="margin-top:0">Bienvenue. Voici les cinq endroits dont vous aurez besoin au quotidien :</p><ul style="margin:0">';
+		echo '<p style="margin-top:0">Bienvenue. Voici les endroits dont vous aurez besoin au quotidien :</p><ul style="margin:0">';
 		foreach ( $liens as $lien ) {
 			printf(
 				'<li style="margin-bottom:8px">→ <a href="%s"><strong>%s</strong></a></li>',

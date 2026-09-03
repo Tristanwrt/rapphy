@@ -1,6 +1,8 @@
 <?php
 /**
- * Pied de page.
+ * Pied de page : trois colonnes symétriques (contact · la villa · plan du site).
+ * Les textes se modifient dans Personnaliser → Pied de page, les liens dans
+ * Apparence → Menus (emplacement « Menu du pied de page »).
  *
  * @package VillaRaffy
  */
@@ -11,11 +13,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $vr_tel      = get_theme_mod( 'vr_telephone', '' );
 $vr_tel_lien = vr_tel_brut( $vr_tel );
+$vr_whatsapp = vr_tel_brut( get_theme_mod( 'vr_whatsapp', '' ) );
 $vr_email    = get_theme_mod( 'vr_email', '' );
 $vr_adresse  = get_theme_mod( 'vr_adresse', '' );
 $vr_label    = get_theme_mod( 'vr_classement', '' );
 $vr_airbnb   = get_theme_mod( 'vr_url_airbnb', '' );
+$vr_google   = get_theme_mod( 'vr_url_google', '' );
 $vr_hotes    = get_theme_mod( 'vr_hotes', 'Vos hôtes' );
+
+$vr_menu_secours = array(
+	array( 'Le séjour & la cuisine', '/#villa' ),
+	array( 'Les chambres', '/#chambres' ),
+	array( 'Formules & tarifs', '/#formules' ),
+	array( 'Piscine, jacuzzi & jardin', '/#exterieurs' ),
+	array( 'Avis des voyageurs', '/#avis' ),
+	array( 'Réserver en direct', '/#reserver' ),
+	array( 'Questions fréquentes', '/#faq' ),
+);
 ?>
 </main>
 
@@ -23,8 +37,8 @@ $vr_hotes    = get_theme_mod( 'vr_hotes', 'Vos hôtes' );
 
 	<div class="vr-footer__cta">
 		<div class="vr-wrap vr-reveal">
-			<h2><?php echo esc_html( get_theme_mod( 'vr_pied_cta_titre', 'Votre prochain séjour d\'exception commence ici' ) ); ?></h2>
-			<p>Un appel, un message — et la villa est à vous. <?php echo esc_html( $vr_hotes ); ?> vous répondent personnellement.</p>
+			<h2><?php echo esc_html( get_theme_mod( 'vr_pied_cta_titre', '' ) ); ?></h2>
+			<p><?php echo esc_html( str_replace( '{hotes}', $vr_hotes, get_theme_mod( 'vr_pied_cta_texte', '' ) ) ); ?></p>
 			<div class="vr-footer__buttons">
 				<a class="vr-btn vr-btn--primary" href="<?php echo esc_url( home_url( '/#reserver' ) ); ?>">Vérifier les disponibilités</a>
 				<?php if ( $vr_tel ) : ?>
@@ -39,21 +53,19 @@ $vr_hotes    = get_theme_mod( 'vr_hotes', 'Vos hôtes' );
 
 	<div class="vr-wrap vr-footer__cols">
 
-		<div class="vr-footer__brand">
-			<div class="font-display" style="font-size:1.25rem"><?php bloginfo( 'name' ); ?></div>
-			<?php if ( get_bloginfo( 'description' ) ) : ?>
-				<p class="vr-footer__tag"><?php bloginfo( 'description' ); ?></p>
-			<?php endif; ?>
-			<p><?php echo esc_html( get_theme_mod( 'vr_pied_texte', '' ) ); ?></p>
-		</div>
-
-		<div>
+		<div class="vr-footer__col vr-footer__col--gauche">
 			<h3>Contact</h3>
 			<ul>
 				<?php if ( $vr_tel ) : ?>
 					<li>
 						<?php vr_icone( 'phone', 'vr-icon vr-icon--sm' ); ?>
 						<a href="tel:+<?php echo esc_attr( $vr_tel_lien ); ?>"><?php echo esc_html( $vr_tel ); ?></a>
+					</li>
+				<?php endif; ?>
+				<?php if ( $vr_whatsapp ) : ?>
+					<li>
+						<?php vr_icone( 'whatsapp', 'vr-icon vr-icon--sm' ); ?>
+						<a href="https://wa.me/<?php echo esc_attr( $vr_whatsapp ); ?>" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
 					</li>
 				<?php endif; ?>
 				<?php if ( $vr_email ) : ?>
@@ -71,7 +83,32 @@ $vr_hotes    = get_theme_mod( 'vr_hotes', 'Vos hôtes' );
 			</ul>
 		</div>
 
-		<div>
+		<div class="vr-footer__col vr-footer__col--centre">
+			<div class="vr-footer__brand">
+				<?php if ( has_custom_logo() ) : ?>
+					<?php echo wp_get_attachment_image( get_theme_mod( 'custom_logo' ), 'medium', false, array( 'class' => 'vr-footer__logo', 'alt' => get_bloginfo( 'name' ) ) ); ?>
+				<?php else : ?>
+					<div class="vr-footer__nom"><?php bloginfo( 'name' ); ?></div>
+				<?php endif; ?>
+				<?php if ( get_bloginfo( 'description' ) ) : ?>
+					<p class="vr-footer__tag"><?php bloginfo( 'description' ); ?></p>
+				<?php endif; ?>
+				<p class="vr-footer__texte"><?php echo esc_html( get_theme_mod( 'vr_pied_texte', '' ) ); ?></p>
+			</div>
+
+			<?php if ( $vr_google || $vr_airbnb ) : ?>
+				<div class="vr-footer__plateformes">
+					<?php if ( $vr_google ) : ?>
+						<a href="<?php echo esc_url( $vr_google ); ?>" target="_blank" rel="noopener" aria-label="Nos avis Google (nouvelle fenêtre)"><?php vr_logo_plateforme( 'google' ); ?></a>
+					<?php endif; ?>
+					<?php if ( $vr_airbnb ) : ?>
+						<a href="<?php echo esc_url( $vr_airbnb ); ?>" target="_blank" rel="noopener" aria-label="Notre annonce Airbnb (nouvelle fenêtre)"><?php vr_logo_plateforme( 'airbnb' ); ?></a>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+		</div>
+
+		<div class="vr-footer__col vr-footer__col--droite">
 			<h3>La villa</h3>
 			<?php
 			if ( has_nav_menu( 'pied' ) ) {
@@ -83,41 +120,21 @@ $vr_hotes    = get_theme_mod( 'vr_hotes', 'Vos hôtes' );
 					'fallback_cb'    => false,
 				) );
 			} else {
-				?>
-				<ul>
-					<li><a href="<?php echo esc_url( home_url( '/#villa' ) ); ?>">Le séjour &amp; la cuisine</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/#chambres' ) ); ?>">Les chambres</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/#exterieurs' ) ); ?>">Piscine, jacuzzi &amp; jardin</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/#avis' ) ); ?>">Avis des voyageurs</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/#reserver' ) ); ?>">Réserver en direct</a></li>
-				</ul>
-				<?php
+				echo '<ul>';
+				foreach ( $vr_menu_secours as $vr_lien ) {
+					printf( '<li><a href="%s">%s</a></li>', esc_url( home_url( $vr_lien[1] ) ), esc_html( $vr_lien[0] ) );
+				}
+				echo '</ul>';
 			}
 			?>
-		</div>
-
-		<div>
-			<h3>Confiance</h3>
-			<ul>
-				<?php if ( $vr_label ) : ?>
-					<li><?php vr_icone( 'shield', 'vr-icon vr-icon--sm' ); ?><span><?php echo esc_html( $vr_label ); ?></span></li>
-				<?php endif; ?>
-				<li><?php vr_icone( 'star', 'vr-icon vr-icon--sm' ); ?><span><?php echo esc_html( get_theme_mod( 'vr_preuve_1', '' ) ); ?></span></li>
-				<?php if ( $vr_airbnb ) : ?>
-					<li>
-						<?php vr_icone( 'arrow', 'vr-icon vr-icon--sm' ); ?>
-						<a href="<?php echo esc_url( $vr_airbnb ); ?>" target="_blank" rel="noopener">Notre annonce Airbnb</a>
-					</li>
-				<?php endif; ?>
-			</ul>
 		</div>
 
 	</div>
 
 	<div class="vr-footer__legal">
 		<div class="vr-wrap vr-footer__legal-inner">
-			<p>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?><?php echo $vr_adresse ? ' — ' . esc_html( $vr_adresse ) : ''; ?>. Tous droits réservés.</p>
-			<p>Location saisonnière de standing<?php echo $vr_label ? ' · ' . esc_html( $vr_label ) : ''; ?></p>
+			<p>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?><?php echo $vr_adresse ? ' · ' . esc_html( $vr_adresse ) : ''; ?></p>
+			<p><?php echo esc_html( get_theme_mod( 'vr_pied_legal', '' ) ); ?><?php echo $vr_label ? ' · ' . esc_html( $vr_label ) : ''; ?></p>
 		</div>
 	</div>
 

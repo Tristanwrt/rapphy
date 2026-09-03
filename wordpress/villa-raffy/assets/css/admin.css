@@ -91,3 +91,11 @@
 .vr-saison__jours > div > span { width: 100%; }
 .vr-saison__jour { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
 .vr-saison__supprimer { margin-left: auto; align-self: center; }
+
+/* ─── Galerie de photos dans les fiches (thème) ─── */
+.vr-galerie-admin { display: block; margin-top: 6px; }
+.vr-galerie-admin__liste { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+.vr-galerie-admin__item { position: relative; width: 96px; height: 96px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+.vr-galerie-admin__item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vr-galerie-admin__retirer { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border: 0; border-radius: 999px; background: rgba(0,0,0,.65); color: #fff; font-size: 14px; line-height: 22px; cursor: pointer; padding: 0; }
+.vr-galerie-admin__retirer:hover { background: #b32d2e; }

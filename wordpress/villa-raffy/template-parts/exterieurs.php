@@ -61,7 +61,7 @@ $vr_icones  = array( 'waves', 'spa', 'beach', 'tree', 'sun' );
 		<div class="vr-mosaic">
 			<?php foreach ( $vr_mosaique as $vr_i => $vr_photo ) : ?>
 				<div class="vr-media <?php echo esc_attr( $vr_classes[ $vr_i ] ); ?> vr-reveal" style="transition-delay:<?php echo esc_attr( $vr_i * 0.06 ); ?>s;box-shadow:var(--shadow-soft)">
-					<?php vr_image( get_post_thumbnail_id( $vr_photo ), 'vr-mosaique', get_the_title( $vr_photo ), '' ); ?>
+					<?php vr_galerie( $vr_photo, 'vr-mosaique', get_the_title( $vr_photo ) ); ?>
 					<span class="vr-mosaic__legende"><?php echo esc_html( get_the_title( $vr_photo ) ); ?></span>
 				</div>
 			<?php endforeach; ?>

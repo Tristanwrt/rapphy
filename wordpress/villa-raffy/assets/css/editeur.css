@@ -1,0 +1,38 @@
+/* Styles propres à l'éditeur de blocs : l'aperçu des sections reste fidèle au site. */
+
+body { background: #f6f2ea; }
+
+.vr-reveal { opacity: 1 !important; transform: none !important; }
+
+/* La grande image n'a pas besoin de faire tout l'écran dans l'éditeur. */
+.vr-hero { min-height: 560px; }
+.vr-hero__inner { padding-block: 96px 56px; }
+
+/* Cadre de chaque section dans l'éditeur */
+.vr-bloc { position: relative; }
+.vr-bloc__etiquette {
+  position: absolute; top: 10px; left: 10px; z-index: 20;
+  padding: 6px 12px; border-radius: 999px;
+  background: #16241f; color: #fbf9f4;
+  font-family: system-ui, sans-serif; font-size: 11px; font-weight: 500; line-height: 1;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  opacity: 0.85; pointer-events: none;
+}
+.vr-bloc.is-selected .vr-bloc__etiquette { background: #b08d57; opacity: 1; }
+
+/* Carte de remplacement pour les sections animées */
+.vr-bloc-apercu {
+  padding: 56px 32px; text-align: center;
+  background: #16241f; color: #fbf9f4;
+}
+.vr-bloc-apercu__nom { display: block; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: #b08d57; margin-bottom: 12px; }
+.vr-bloc-apercu strong { display: block; font-family: "Sentient", Georgia, serif; font-size: 1.75rem; font-weight: 500; }
+.vr-bloc-apercu p { max-width: 40rem; margin: 10px auto 0; color: rgba(251, 249, 244, 0.7); font-size: 0.95rem; }
+.vr-bloc-apercu__note { font-size: 0.8rem; color: rgba(251, 249, 244, 0.5); }
+
+/* Les blocs classiques glissés entre deux sections */
+.wp-block:not([data-type^="villa-raffy/"]) { max-width: 1280px; margin-inline: auto; padding-inline: 24px; }
+
+/* Les blocs du thème prennent toute la largeur de l'éditeur */
+.wp-block[data-type^="villa-raffy/"] { max-width: none; }
+.editor-styles-wrapper .vr-wrap { max-width: 1280px; margin-inline: auto; }
