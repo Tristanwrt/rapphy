@@ -29,9 +29,9 @@ function vr_setup() {
 	) );
 
 	// Formats d'images utilisés par le thème.
-	add_image_size( 'vr-hero', 2000, 1200, true );
-	add_image_size( 'vr-carte', 800, 600, true );
-	add_image_size( 'vr-mosaique', 1200, 900, true );
+	add_image_size( 'vr-hero', 2400, 1440, true );
+	add_image_size( 'vr-carte', 1000, 750, true );
+	add_image_size( 'vr-mosaique', 1400, 1050, true );
 }
 add_action( 'after_setup_theme', 'vr_setup' );
 
@@ -85,6 +85,21 @@ require_once get_template_directory() . '/inc/metaboxes.php';
 require_once get_template_directory() . '/inc/redirections.php';
 require_once get_template_directory() . '/inc/seo.php';
 require_once get_template_directory() . '/inc/blocs.php';
+
+/**
+ * Qualité des photos : WordPress compresse à 82/100 par défaut et rétrécit
+ * tout ce qui dépasse 2560 px. Pour une villa, on veut des images nettes,
+ * y compris sur les écrans Retina.
+ */
+add_filter( 'jpeg_quality', function () {
+	return 90;
+} );
+add_filter( 'wp_editor_set_quality', function () {
+	return 90;
+} );
+add_filter( 'big_image_size_threshold', function () {
+	return 3200;
+} );
 
 /* ═══════════════════════════════════════════════════════════
    4. FONCTIONS UTILITAIRES
