@@ -188,7 +188,26 @@
 	} );
 
 	/* ═══════════════════════════════════════════════════
-	   6. CALENDRIER DE RÉSERVATION
+	   6. DIAPORAMA (section « La villa en mouvement »)
+	   ═══════════════════════════════════════════════════ */
+
+	var diapo = document.getElementById( 'vr-diapo' );
+
+	if ( diapo ) {
+		var vues = Array.prototype.slice.call( diapo.querySelectorAll( '.vr-diapo__vue' ) );
+		var vueActive = 0;
+
+		if ( vues.length > 1 && ! reduit ) {
+			window.setInterval( function () {
+				vues[ vueActive ].classList.remove( 'is-active' );
+				vueActive = ( vueActive + 1 ) % vues.length;
+				vues[ vueActive ].classList.add( 'is-active' );
+			}, 4500 );
+		}
+	}
+
+	/* ═══════════════════════════════════════════════════
+	   7. CALENDRIER DE RÉSERVATION
 	   ═══════════════════════════════════════════════════ */
 
 	var calendrier = document.getElementById( 'vr-calendrier' );
@@ -197,27 +216,45 @@
 
 		var MOIS = [ 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre' ];
 		var JOURS = [ 'L', 'M', 'M', 'J', 'V', 'S', 'D' ];
+		var NOMS_JOURS = [ 'dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi' ];
+		var NOMS_FORMULES = { complete: 'Villa complète', cocooning: 'Formule Cocooning' };
 
 		var conteneurMois = document.getElementById( 'vr-cal-months' );
 		var boutonPrec = document.getElementById( 'vr-cal-prec' );
 		var boutonSuiv = document.getElementById( 'vr-cal-suiv' );
 		var zoneErreur = document.getElementById( 'vr-cal-erreur' );
+		var boutonsFormule = Array.prototype.slice.call( calendrier.querySelectorAll( '.vr-formule-btn' ) );
 
 		var aujourdhui = new Date();
 		aujourdhui.setHours( 0, 0, 0, 0 );
 
 		var vue = { annee: aujourdhui.getFullYear(), mois: aujourdhui.getMonth() };
+		var formule = 'complete';
 		var arrivee = null;
 		var depart = null;
 		var survol = null;
-		var bloquees = [];   // Périodes indisponibles, au format { debut: Date, fin: Date }
 
-		function cle( d ) {
-			return d.getFullYear() + '-' + deux( d.getMonth() + 1 ) + '-' + deux( d.getDate() );
-		}
+		// Données de l'extension : une entrée par jour, indexée par « AAAA-MM-JJ ».
+		var jours = {};
+		var moteurActif = false;   // Vrai quand l'extension a répondu.
+		var capacites = { complete: vrData.capaciteMax || 8, cocooning: 4 };
+		var derniereDate = null;   // Dernier jour couvert par le calendrier de l'extension.
+
+		boutonsFormule.forEach( function ( bouton ) {
+			var cap = parseInt( bouton.dataset.capacite, 10 );
+			if ( cap ) {
+				capacites[ bouton.dataset.choix ] = cap;
+			}
+		} );
+
+		/* ─── Outils ─── */
 
 		function deux( n ) {
 			return n < 10 ? '0' + n : String( n );
+		}
+
+		function cle( d ) {
+			return d.getFullYear() + '-' + deux( d.getMonth() + 1 ) + '-' + deux( d.getDate() );
 		}
 
 		function depuisCle( texte ) {
@@ -225,22 +262,81 @@
 			return new Date( parseInt( p[0], 10 ), parseInt( p[1], 10 ) - 1, parseInt( p[2], 10 ) );
 		}
 
-		function estBloquee( date ) {
-			var t = date.getTime();
-			return bloquees.some( function ( periode ) {
-				return t >= periode.debut.getTime() && t < periode.fin.getTime();
-			} );
+		function lendemain( d ) {
+			var n = new Date( d );
+			n.setDate( n.getDate() + 1 );
+			return n;
 		}
 
-		function chevauche( du, au ) {
-			var curseur = new Date( du );
-			while ( curseur < au ) {
-				if ( estBloquee( curseur ) ) {
-					return true;
-				}
-				curseur.setDate( curseur.getDate() + 1 );
+		function veille( d ) {
+			var n = new Date( d );
+			n.setDate( n.getDate() - 1 );
+			return n;
+		}
+
+		function euros( n ) {
+			return String( Math.round( n ) ).replace( /\B(?=(\d{3})+(?!\d))/g, ' ' ) + ' €';
+		}
+
+		function pluriel( n, mot ) {
+			return n + ' ' + mot + ( n > 1 ? 's' : '' );
+		}
+
+		function formater( d ) {
+			return d.toLocaleDateString( 'fr-FR', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' } );
+		}
+
+		/**
+		 * Les informations d'un jour. Sans extension, tout est ouvert et sans prix.
+		 */
+		function info( d ) {
+			var k = cle( d );
+
+			if ( jours[ k ] ) {
+				return jours[ k ];
 			}
-			return false;
+
+			if ( moteurActif ) {
+				// Au-delà de la période couverte : considéré comme fermé.
+				return { t: 'fermee', ok: false, p: { complete: null, cocooning: null }, a: false, r: false, m: 1 };
+			}
+
+			return { t: 'basse', ok: true, p: { complete: null, cocooning: null }, a: true, r: true, m: vrData.nuitsMinimum || 1 };
+		}
+
+		function prixDe( d ) {
+			var p = info( d ).p;
+			return ( p && null !== p[ formule ] && undefined !== p[ formule ] ) ? p[ formule ] : null;
+		}
+
+		/**
+		 * Une nuit se réserve si le jour est ouvert, libre, et proposé dans la formule choisie.
+		 */
+		function nuitPossible( d ) {
+			var i = info( d );
+			if ( ! i.ok ) {
+				return false;
+			}
+			if ( moteurActif && null === prixDe( d ) ) {
+				return false;
+			}
+			return true;
+		}
+
+		function arriveePossible( d ) {
+			return d >= aujourdhui && nuitPossible( d ) && info( d ).a;
+		}
+
+		/**
+		 * On peut partir un jour « fermé » si la veille était une nuit possible
+		 * (le dernier jour d'une saison), sinon le jour doit accepter les départs.
+		 */
+		function departPossible( d ) {
+			var i = info( d );
+			if ( 'fermee' === i.t ) {
+				return nuitPossible( veille( d ) );
+			}
+			return i.r;
 		}
 
 		function erreur( message ) {
@@ -250,6 +346,64 @@
 			zoneErreur.textContent = message || '';
 			zoneErreur.hidden = ! message;
 		}
+
+		/**
+		 * Vérifie un séjour complet. Renvoie null si tout va bien, sinon { code, message } :
+		 * « croise » quand la plage traverse des dates impossibles (on repart alors de la date cliquée),
+		 * « regle » quand c'est une règle de séjour qui bloque (on explique).
+		 */
+		function verifier( du, au ) {
+			var nuits = Math.round( ( au - du ) / 86400000 );
+			var minimum = 1;
+			var curseur = new Date( du );
+
+			if ( nuits < 1 ) {
+				return { code: 'regle', message: 'Le départ doit être après l\'arrivée.' };
+			}
+
+			while ( curseur < au ) {
+				var i = info( curseur );
+				if ( ! i.ok ) {
+					return { code: 'croise', message: 'fermee' === i.t
+						? 'La villa est fermée sur une partie de ces dates.'
+						: 'Cette période contient des dates déjà réservées. Choisissez une autre plage.' };
+				}
+				if ( moteurActif && null === prixDe( curseur ) ) {
+					return { code: 'croise', message: 'La ' + NOMS_FORMULES[ formule ] + ' n\'est pas proposée sur une partie de ces dates. Choisissez la villa complète, ou d\'autres dates.' };
+				}
+				minimum = Math.max( minimum, i.m || 1 );
+				curseur = lendemain( curseur );
+			}
+
+			if ( ! departPossible( au ) ) {
+				return { code: 'regle', message: 'Sur cette période, les départs se font le ' + deviner( veille( au ), 'r' ) + '.' };
+			}
+
+			if ( nuits < minimum ) {
+				return { code: 'regle', message: 'Sur cette période, le séjour minimum est de ' + pluriel( minimum, 'nuit' ) + '.' };
+			}
+
+			return null;
+		}
+
+		/**
+		 * Nom des jours autorisés pour l'arrivée (« a ») ou le départ (« r ») autour d'une date :
+		 * l'API ne donne que vrai/faux par jour, on regarde donc la semaine qui suit pour les nommer.
+		 */
+		function deviner( depuis, sens ) {
+			var noms = [];
+			var d = new Date( depuis );
+			for ( var n = 0; n < 7; n++ ) {
+				var j = info( d );
+				if ( j[ sens ] && 'fermee' !== j.t && noms.indexOf( NOMS_JOURS[ d.getDay() ] ) < 0 ) {
+					noms.push( NOMS_JOURS[ d.getDay() ] );
+				}
+				d = lendemain( d );
+			}
+			return noms.length ? noms.join( ' ou le ' ) : 'jour prévu';
+		}
+
+		/* ─── Dessin ─── */
 
 		function dessinerMois( annee, mois ) {
 			var premier = new Date( annee, mois, 1 );
@@ -270,14 +424,43 @@
 
 			for ( var j = 1; j <= nbJours; j++ ) {
 				var date = new Date( annee, mois, j );
+				var i = info( date );
 				var passe = date < aujourdhui;
-				var occupe = estBloquee( date );
-				var indispo = passe || occupe;
+				var prix = prixDe( date );
+				var ferme = 'fermee' === i.t;
+				var occupe = ! passe && ! ferme && ! i.ok;
+				var sansFormule = moteurActif && ! ferme && i.ok && null === prix;
+				// Un jour fermé ou réservé reste un jour de départ possible si la veille se réserve.
+				var departSeul = ! passe && ( ferme || occupe ) && departPossible( date ) && nuitPossible( veille( date ) );
+				var desactive = passe || ( ( ferme || occupe ) && ! departSeul );
 
-				html += '<button type="button" class="vr-cal__day" data-date="' + cle( date ) + '"' +
-					( indispo ? ' disabled' : '' ) +
-					' aria-label="' + j + ' ' + MOIS[ mois ] + ' ' + annee + ( indispo ? ' — indisponible' : '' ) + '">' +
-					j + '</button>';
+				var classes = [ 'vr-cal__day' ];
+				if ( ferme ) { classes.push( 'is-closed' ); }
+				if ( occupe ) { classes.push( 'is-busy' ); }
+				if ( departSeul ) { classes.push( 'is-checkout-only' ); }
+				if ( 'haute' === i.t ) { classes.push( 'is-haute' ); }
+				if ( sansFormule ) { classes.push( 'is-off' ); }
+				if ( ! passe && ! desactive && ! departSeul && ! i.a ) { classes.push( 'is-no-arrival' ); }
+
+				var etat = '';
+				if ( passe ) { etat = ' — passé'; }
+				else if ( departSeul ) { etat = ' — jour de départ uniquement'; }
+				else if ( ferme ) { etat = ' — fermé'; }
+				else if ( occupe ) { etat = ' — réservé'; }
+				else if ( sansFormule ) { etat = ' — non proposé dans cette formule'; }
+				else if ( null !== prix ) { etat = ' — ' + euros( prix ) + ' la nuit'; }
+
+				var sousTexte = '';
+				if ( ! passe && ! ferme && ! occupe ) {
+					sousTexte = null !== prix ? euros( prix ).replace( ' €', '€' ) : ( sansFormule ? '—' : '' );
+				}
+
+				html += '<button type="button" class="' + classes.join( ' ' ) + '" data-date="' + cle( date ) + '"' +
+					( desactive ? ' disabled' : '' ) +
+					' aria-label="' + NOMS_JOURS[ date.getDay() ] + ' ' + j + ' ' + MOIS[ mois ] + ' ' + annee + etat + '">' +
+					'<span class="vr-cal__num">' + j + '</span>' +
+					( sousTexte ? '<span class="vr-cal__prix">' + sousTexte + '</span>' : '' ) +
+					'</button>';
 			}
 
 			html += '</div></div>';
@@ -316,17 +499,51 @@
 
 			conteneurMois.innerHTML = dessinerMois( vue.annee, vue.mois ) + dessinerMois( anneeSuivante, moisSuivant );
 
-			// Le bouton « précédent » ne remonte pas avant le mois courant.
+			// Le bouton « précédent » ne remonte pas avant le mois courant,
+			// le bouton « suivant » ne dépasse pas la période couverte.
 			if ( boutonPrec ) {
 				boutonPrec.disabled = ( vue.annee === aujourdhui.getFullYear() && vue.mois === aujourdhui.getMonth() );
+			}
+			if ( boutonSuiv ) {
+				var limite = derniereDate ? derniereDate : new Date( aujourdhui.getFullYear() + 1, aujourdhui.getMonth() + 1, 0 );
+				boutonSuiv.disabled = new Date( anneeSuivante, moisSuivant + 1, 1 ) > limite;
 			}
 
 			majSelection();
 			majRecap();
 		}
 
-		function formater( d ) {
-			return d.toLocaleDateString( 'fr-FR', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' } );
+		/* ─── Récapitulatif et total ─── */
+
+		function calculer() {
+			if ( ! arrivee || ! depart ) {
+				return null;
+			}
+
+			var lignes = [];   // [ { prix, nuits } ] dans l'ordre du séjour.
+			var total = 0;
+			var nuits = 0;
+			var complet = true;
+			var curseur = new Date( arrivee );
+
+			while ( curseur < depart ) {
+				var prix = prixDe( curseur );
+				nuits++;
+				if ( null === prix ) {
+					complet = false;
+				} else {
+					total += prix;
+					var derniere = lignes[ lignes.length - 1 ];
+					if ( derniere && derniere.prix === prix ) {
+						derniere.nuits++;
+					} else {
+						lignes.push( { prix: prix, nuits: 1 } );
+					}
+				}
+				curseur = lendemain( curseur );
+			}
+
+			return { nuits: nuits, total: complet ? total : null, lignes: lignes };
 		}
 
 		function majRecap() {
@@ -334,6 +551,10 @@
 			var champDepart = document.getElementById( 'vr-recap-depart' );
 			var champDuree = document.getElementById( 'vr-recap-duree' );
 			var blocDuree = document.getElementById( 'vr-recap-duree-bloc' );
+			var blocTotal = document.getElementById( 'vr-total' );
+			var champCalcul = document.getElementById( 'vr-total-calcul' );
+			var champMontant = document.getElementById( 'vr-total-montant' );
+			var champFormule = document.getElementById( 'vr-total-formule' );
 
 			if ( champArrivee ) {
 				champArrivee.textContent = arrivee ? formater( arrivee ) : '— choisissez une date —';
@@ -342,31 +563,56 @@
 				champDepart.textContent = depart ? formater( depart ) : '—';
 			}
 
-			var nuits = ( arrivee && depart ) ? Math.round( ( depart - arrivee ) / 86400000 ) : 0;
+			var sejour = calculer();
+			var nuits = sejour ? sejour.nuits : 0;
 
 			if ( blocDuree ) {
 				blocDuree.hidden = nuits < 1;
 			}
 			if ( champDuree && nuits > 0 ) {
-				champDuree.textContent = nuits + ( nuits > 1 ? ' nuits' : ' nuit' );
+				champDuree.textContent = pluriel( nuits, 'nuit' );
 			}
 
-			majLiens( nuits );
+			if ( blocTotal ) {
+				var afficher = !! ( sejour && null !== sejour.total );
+				blocTotal.hidden = ! afficher;
+
+				if ( afficher ) {
+					champCalcul.textContent = sejour.lignes.map( function ( ligne ) {
+						return pluriel( ligne.nuits, 'nuit' ) + ' × ' + euros( ligne.prix );
+					} ).join( ' + ' ) + ' =';
+					champMontant.textContent = euros( sejour.total );
+				}
+				if ( champFormule ) {
+					champFormule.textContent = NOMS_FORMULES[ formule ];
+				}
+			}
+
+			majLiens( sejour );
 		}
 
-		function majLiens( nuits ) {
+		function majLiens( sejour ) {
 			var lienWhatsApp = document.getElementById( 'vr-lien-whatsapp' );
 			var lienEmail = document.getElementById( 'vr-lien-email' );
 			var voyageurs = document.getElementById( 'vr-voyageurs' );
 			var nb = voyageurs ? parseInt( voyageurs.textContent, 10 ) : 2;
-			var pret = !! ( arrivee && depart );
+			var pret = !! ( arrivee && depart && sejour );
 
-			var message = pret
-				? 'Bonjour, je souhaite réserver ' + vrData.nomVilla + ' du ' + formater( arrivee ) +
-				  ' au ' + formater( depart ) + ' (' + nuits + ( nuits > 1 ? ' nuits' : ' nuit' ) + ') pour ' +
-				  nb + ' voyageur' + ( nb > 1 ? 's' : '' ) +
-				  '. Merci de me confirmer la disponibilité et le tarif.'
-				: '';
+			var message = '';
+
+			if ( pret ) {
+				message = 'Bonjour, je souhaite réserver ' + vrData.nomVilla + ' en formule « ' + NOMS_FORMULES[ formule ] + ' » du ' +
+					formater( arrivee ) + ' au ' + formater( depart ) + ' (' + pluriel( sejour.nuits, 'nuit' ) + ') pour ' +
+					pluriel( nb, 'voyageur' ) + '.';
+
+				if ( null !== sejour.total ) {
+					message += ' Tarif affiché : ' + sejour.lignes.map( function ( ligne ) {
+						return pluriel( ligne.nuits, 'nuit' ) + ' × ' + euros( ligne.prix );
+					} ).join( ' + ' ) + ' = ' + euros( sejour.total ) + '.';
+				}
+
+				message += ' Merci de me confirmer la disponibilité.';
+			}
 
 			if ( lienWhatsApp ) {
 				lienWhatsApp.setAttribute( 'aria-disabled', pret ? 'false' : 'true' );
@@ -385,41 +631,97 @@
 			}
 		}
 
+		/* ─── Sélection ─── */
+
+		/**
+		 * Tente de poser l'arrivée sur une date ; explique pourquoi si c'est impossible.
+		 */
+		function tenterArrivee( date ) {
+			if ( ! arriveePossible( date ) ) {
+				var i = info( date );
+				if ( 'fermee' === i.t ) {
+					erreur( 'La villa est fermée à cette date : elle ne peut être qu\'un jour de départ.' );
+				} else if ( ! i.ok ) {
+					erreur( 'Cette date est déjà réservée : elle ne peut être qu\'un jour de départ.' );
+				} else if ( moteurActif && null === prixDe( date ) ) {
+					erreur( 'La ' + NOMS_FORMULES[ formule ] + ' n\'est pas proposée à cette date. Choisissez la villa complète, ou d\'autres dates.' );
+				} else if ( ! i.a ) {
+					erreur( 'Sur cette période, les arrivées se font le ' + deviner( date, 'a' ) + '.' );
+				} else {
+					erreur( 'Cette date n\'est pas disponible à l\'arrivée.' );
+				}
+				return false;
+			}
+
+			arrivee = date;
+			depart = null;
+			survol = null;
+			majSelection();
+			majRecap();
+			return true;
+		}
+
 		function choisir( date ) {
 			erreur( '' );
 
-			if ( ! arrivee || ( arrivee && depart ) ) {
-				arrivee = date;
-				depart = null;
+			// Premier clic, ou nouveau départ de sélection.
+			if ( ! arrivee || ( arrivee && depart ) || date <= arrivee ) {
+				tenterArrivee( date );
+				return;
+			}
+
+			var probleme = verifier( arrivee, date );
+
+			if ( ! probleme ) {
+				depart = date;
 				survol = null;
 				majSelection();
 				majRecap();
 				return;
 			}
 
-			if ( date <= arrivee ) {
-				arrivee = date;
-				majSelection();
-				majRecap();
+			// La plage traverse des dates impossibles : on repart de la date cliquée.
+			if ( 'croise' === probleme.code ) {
+				tenterArrivee( date );
 				return;
 			}
 
-			var nuits = Math.round( ( date - arrivee ) / 86400000 );
+			erreur( probleme.message );
+		}
 
-			if ( nuits < vrData.nuitsMinimum ) {
-				erreur( 'Séjour minimum : ' + vrData.nuitsMinimum + ' nuits.' );
+		function choisirFormule( choix ) {
+			if ( ! NOMS_FORMULES[ choix ] || choix === formule ) {
 				return;
 			}
 
-			if ( chevauche( arrivee, date ) ) {
-				erreur( 'Cette période contient des dates déjà réservées. Choisissez une autre plage.' );
-				return;
+			formule = choix;
+			calendrier.setAttribute( 'data-formule', choix );
+
+			boutonsFormule.forEach( function ( bouton ) {
+				var actif = bouton.dataset.choix === choix;
+				bouton.classList.toggle( 'is-active', actif );
+				bouton.setAttribute( 'aria-checked', actif ? 'true' : 'false' );
+			} );
+
+			// Le nombre de voyageurs suit la capacité de la formule.
+			if ( sortieVoyageurs ) {
+				sortieVoyageurs.dataset.max = capacites[ choix ];
+				majVoyageurs( 0 );
 			}
 
-			depart = date;
-			survol = null;
-			majSelection();
-			majRecap();
+			// Une sélection devenue impossible est effacée.
+			if ( arrivee && depart && verifier( arrivee, depart ) ) {
+				arrivee = null;
+				depart = null;
+				erreur( 'Vos dates ont été effacées : elles ne sont pas proposées dans cette formule.' );
+			} else if ( arrivee && ! depart && ! arriveePossible( arrivee ) ) {
+				arrivee = null;
+				erreur( '' );
+			} else {
+				erreur( '' );
+			}
+
+			dessiner();
 		}
 
 		// Clics et survol sur les jours.
@@ -446,6 +748,20 @@
 				}
 			} );
 		}
+
+		// Choix de la formule dans le calendrier…
+		boutonsFormule.forEach( function ( bouton ) {
+			bouton.addEventListener( 'click', function () {
+				choisirFormule( bouton.dataset.choix );
+			} );
+		} );
+
+		// …et depuis les boutons « Réserver » de la section des formules.
+		document.querySelectorAll( 'a[data-formule]' ).forEach( function ( lien ) {
+			lien.addEventListener( 'click', function () {
+				choisirFormule( lien.dataset.formule );
+			} );
+		} );
 
 		function changerMois( sens ) {
 			var m = vue.mois + sens;
@@ -478,10 +794,16 @@
 			if ( ! sortieVoyageurs ) {
 				return;
 			}
-			var max = parseInt( sortieVoyageurs.dataset.max, 10 ) || 8;
+			var max = parseInt( sortieVoyageurs.dataset.max, 10 ) || capacites[ formule ] || 8;
 			var valeur = parseInt( sortieVoyageurs.textContent, 10 ) + delta;
 			valeur = Math.max( 1, Math.min( max, valeur ) );
 			sortieVoyageurs.textContent = valeur;
+			if ( boutonPlus ) {
+				boutonPlus.disabled = valeur >= max;
+			}
+			if ( boutonMoins ) {
+				boutonMoins.disabled = valeur <= 1;
+			}
 			majRecap();
 		}
 
@@ -496,25 +818,36 @@
 			} );
 		}
 
-		// Récupération des dates indisponibles auprès de l'extension.
-		function chargerDisponibilites() {
+		// Récupération du calendrier tarifaire auprès de l'extension.
+		function chargerCalendrier() {
 			if ( ! vrData.restUrl ) {
 				dessiner();
 				return;
 			}
 
-			fetch( vrData.restUrl + 'indisponibilites' )
+			fetch( vrData.restUrl + 'calendrier' )
 				.then( function ( reponse ) {
-					return reponse.ok ? reponse.json() : [];
+					return reponse.ok ? reponse.json() : null;
 				} )
-				.then( function ( periodes ) {
-					if ( Array.isArray( periodes ) ) {
-						bloquees = periodes.map( function ( periode ) {
-							return {
-								debut: depuisCle( periode.debut ),
-								fin: depuisCle( periode.fin )
-							};
+				.then( function ( donnees ) {
+					if ( donnees && Array.isArray( donnees.jours ) && donnees.jours.length ) {
+						moteurActif = true;
+						donnees.jours.forEach( function ( jour ) {
+							jours[ jour.d ] = jour;
 						} );
+						derniereDate = depuisCle( donnees.jours[ donnees.jours.length - 1 ].d );
+
+						if ( donnees.formules ) {
+							Object.keys( donnees.formules ).forEach( function ( k ) {
+								if ( donnees.formules[ k ].capacite ) {
+									capacites[ k ] = parseInt( donnees.formules[ k ].capacite, 10 );
+								}
+							} );
+							if ( sortieVoyageurs ) {
+								sortieVoyageurs.dataset.max = capacites[ formule ];
+								majVoyageurs( 0 );
+							}
+						}
 					}
 					dessiner();
 				} )
@@ -523,7 +856,7 @@
 				} );
 		}
 
-		chargerDisponibilites();
+		chargerCalendrier();
 
 		/* ─── Barre de recherche du héro ─── */
 		var recherche = document.getElementById( 'vr-search' );
@@ -536,23 +869,36 @@
 				var champD = document.getElementById( 'vr-search-depart' );
 				var champV = document.getElementById( 'vr-search-voyageurs' );
 
-				if ( champA && champA.value ) {
-					arrivee = depuisCle( champA.value );
-					depart = null;
+				erreur( '' );
 
-					if ( champD && champD.value && champD.value > champA.value ) {
-						var candidat = depuisCle( champD.value );
-						var nuits = Math.round( ( candidat - arrivee ) / 86400000 );
-						if ( nuits >= vrData.nuitsMinimum && ! chevauche( arrivee, candidat ) ) {
-							depart = candidat;
+				if ( champA && champA.value ) {
+					var candidatA = depuisCle( champA.value );
+
+					if ( arriveePossible( candidatA ) ) {
+						arrivee = candidatA;
+						depart = null;
+
+						if ( champD && champD.value && champD.value > champA.value ) {
+							var candidatD = depuisCle( champD.value );
+							var probleme = verifier( arrivee, candidatD );
+							if ( probleme ) {
+								erreur( probleme.message );
+							} else {
+								depart = candidatD;
+							}
 						}
+					} else {
+						arrivee = null;
+						depart = null;
+						erreur( 'La date d\'arrivée choisie n\'est pas disponible. Choisissez une date dans le calendrier.' );
 					}
 
-					vue = { annee: arrivee.getFullYear(), mois: arrivee.getMonth() };
+					vue = { annee: candidatA.getFullYear(), mois: candidatA.getMonth() };
 				}
 
 				if ( champV && sortieVoyageurs ) {
 					sortieVoyageurs.textContent = champV.value;
+					majVoyageurs( 0 );
 				}
 
 				dessiner();

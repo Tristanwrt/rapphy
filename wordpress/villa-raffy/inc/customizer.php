@@ -41,8 +41,9 @@ function vr_customizer( $wp_customize ) {
 	$champ( 'vr_whatsapp', 'Numéro WhatsApp', '06 83 63 89 66', 'vr_contact', 'text', 'Souvent le même que le téléphone. Laissez vide pour masquer le bouton WhatsApp.' );
 	$champ( 'vr_email', 'Adresse email', '', 'vr_contact', 'text', 'L\'adresse qui recevra les demandes de réservation.' );
 	$champ( 'vr_adresse', 'Adresse de la villa', '3 rue Georges Bouyssou, 47340 Saint-Robert', 'vr_contact' );
-	$champ( 'vr_classement', 'Classement ou label', 'Gîtes de France n°47G9070', 'vr_contact' );
-	$champ( 'vr_url_airbnb', 'Lien vers votre annonce Airbnb', '', 'vr_contact', 'url', 'Laissez vide pour masquer le lien.' );
+	$champ( 'vr_classement', 'Classement ou label', '', 'vr_contact', 'text', 'Laissez vide si vous n\'en avez pas.' );
+	$champ( 'vr_url_airbnb', 'Lien vers votre annonce Airbnb', '', 'vr_contact', 'url', 'Le logo Airbnb de la section Avis renverra vers cette page. Laissez vide pour le masquer.' );
+	$champ( 'vr_url_google', 'Lien vers vos avis Google', '', 'vr_contact', 'url', 'Le logo Google de la section Avis renverra vers cette page. Laissez vide pour le masquer.' );
 
 	/* ═══ EN-TÊTE (HÉRO) ═══ */
 	$wp_customize->add_section( 'vr_hero', array(
@@ -71,7 +72,7 @@ function vr_customizer( $wp_customize ) {
 	) );
 
 	$champ( 'vr_preuve_1', 'Mention 1 (avec étoiles)', '4,86/5 · Coup de cœur voyageurs Airbnb', 'vr_confiance' );
-	$champ( 'vr_preuve_2', 'Mention 2 (avec bouclier)', 'Noté 5 étoiles sur Google · Gîtes de France', 'vr_confiance' );
+	$champ( 'vr_preuve_2', 'Mention 2 (avec bouclier)', 'Noté 5 étoiles sur Google', 'vr_confiance' );
 	$champ( 'vr_preuve_3', 'Mention 3 (avec coche)', 'Réservation en direct, sans commission', 'vr_confiance' );
 
 	for ( $i = 1; $i <= 4; $i++ ) {
@@ -99,11 +100,15 @@ function vr_customizer( $wp_customize ) {
 	) );
 
 	$champ( 'vr_villa_titre', 'Section « La villa » — titre', 'Un séjour de 70 m² où la vie s\'installe naturellement', 'vr_sections', 'textarea' );
-	$champ( 'vr_villa_texte_1', 'Section « La villa » — premier paragraphe', 'Poussez la porte : le séjour cathédrale de 70 m² s\'ouvre sur une cuisine équipée et son bar, pensés pour les longues tablées d\'été comme pour les soirées d\'hiver au coin du feu.', 'vr_sections', 'textarea' );
+	$champ( 'vr_villa_texte_1', 'Section « La villa » — premier paragraphe', 'Poussez la porte : le séjour cathédrale de 70 m² s\'ouvre sur une cuisine équipée et son bar, pensés pour les longues tablées d\'été comme pour les soirées d\'hiver au coin du feu. Côté détente, l\'écran géant de 3,5 m transforme le salon en salle de cinéma privée.', 'vr_sections', 'textarea' );
 	$champ( 'vr_villa_texte_2', 'Section « La villa » — second paragraphe', 'De plain-pied, baignée de lumière, la villa regarde la campagne sans aucun vis-à-vis. Familles, couples, tribus d\'amis : chacun y trouve son rythme.', 'vr_sections', 'textarea' );
 
 	$champ( 'vr_chambres_titre', 'Section « Chambres » — titre', 'Quatre chambres, quatre lits grand format, zéro compromis', 'vr_sections', 'textarea' );
-	$champ( 'vr_chambres_texte', 'Section « Chambres » — introduction', 'Toutes les chambres sont équipées de lits 160 × 200 et chaque espace nuit dispose de sa propre salle de bain ou salle d\'eau.', 'vr_sections', 'textarea' );
+	$champ( 'vr_chambres_texte', 'Section « Chambres » — introduction', 'Toutes les chambres sont équipées d\'une literie grand confort 160 × 200. Les deux suites disposent de leur salle d\'eau privative, les deux autres chambres partagent une salle de bain.', 'vr_sections', 'textarea' );
+
+	$champ( 'vr_sejours_titre', 'Section « Formules » — titre', 'La villa entière, ou la version cocooning', 'vr_sections', 'textarea' );
+	$champ( 'vr_sejours_haute_texte', 'Formule villa complète — description', 'Les 180 m² et les 2300 m² de parc rien que pour vous : 4 chambres, jusqu\'à 8 voyageurs, piscine, jacuzzi, plage privée, salle de sport et cinéma. La formule idéale pour les familles et les tribus d\'amis.', 'vr_sections', 'textarea' );
+	$champ( 'vr_sejours_basse_texte', 'Formule cocooning — description', 'Un privilège rare de basse saison : la villa entièrement privatisée pour 2 à 4 personnes. Deux chambres restent fermées, et vous gardez la piscine, le jacuzzi, l\'intégralité du jardin et le calme absolu, rien que pour vous.', 'vr_sections', 'textarea' );
 
 	$champ( 'vr_ext_titre', 'Section « Piscine & jardin » — titre', 'Un cocktail au bar immergé,', 'vr_sections' );
 	$champ( 'vr_ext_titre_2', 'Section « Piscine & jardin » — suite du titre (en doré)', 'les pieds dans l\'eau', 'vr_sections' );
@@ -112,6 +117,24 @@ function vr_customizer( $wp_customize ) {
 
 	$champ( 'vr_region_titre', 'Section « La région » — titre', 'Idéalement placée entre Agen et Villeneuve-sur-Lot', 'vr_sections', 'textarea' );
 	$champ( 'vr_region_texte', 'Section « La région » — introduction', 'Vous êtes au centre exact du Lot-et-Garonne. La position parfaite pour rayonner : marchés, bastides, vignobles et baignades.', 'vr_sections', 'textarea' );
+
+	/* ═══ VIDÉO ═══ */
+	$wp_customize->add_section( 'vr_video', array(
+		'title'       => 'Vidéo de présentation',
+		'priority'    => 29,
+		'description' => 'Un montage court et rythmé de la villa. Sans fichier vidéo, le site enchaîne automatiquement les photos de la visite guidée en fondu.',
+	) );
+
+	$wp_customize->add_setting( 'vr_video_fichier', array( 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'vr_video_fichier', array(
+		'label'       => 'Fichier vidéo (MP4)',
+		'description' => 'Format MP4, idéalement moins de 20 Mo, sans son ou avec un son discret : la vidéo démarre en muet.',
+		'section'     => 'vr_video',
+		'mime_type'   => 'video',
+	) ) );
+
+	$champ( 'vr_video_surtitre', 'Petite ligne au-dessus du titre', 'La villa en mouvement', 'vr_video' );
+	$champ( 'vr_video_titre', 'Titre', 'Trente secondes pour tomber sous le charme', 'vr_video', 'textarea' );
 
 	/* ═══ CARTE ═══ */
 	$wp_customize->add_section( 'vr_carte', array(
@@ -133,10 +156,10 @@ function vr_customizer( $wp_customize ) {
 	$champ(
 		'vr_chiffres_liste',
 		'Vos chiffres',
-		"180 m² | de villa de plain-pied | ruler\n8 | voyageurs | users\n4 | chambres & suites | bed\n2300 m² | de terrain clos | tree\n9 m | de piscine, bar immergé | waves\n5 places | de jacuzzi | spa",
+		"180 m² | de villa de plain-pied | ruler\n8 | voyageurs | users\n4 | chambres & suites | bed\n2300 m² | de terrain clos | tree\n9 m | de piscine, bar immergé | waves\n5 places | de jacuzzi | spa\n3,5 m | d'écran géant | film\nPrivée | salle de sport | dumbbell",
 		'vr_chiffres',
 		'textarea',
-		'Icônes possibles : ruler, users, bed, tree, waves, spa, sun, wifi, film, chef, paw, shield, check, calendar.'
+		'Icônes possibles : ruler, users, bed, tree, waves, spa, sun, wifi, film, dumbbell, chef, paw, shield, check, calendar, beach.'
 	);
 
 	/* ═══ RÉSERVER EN DIRECT ═══ */
@@ -151,7 +174,7 @@ function vr_customizer( $wp_customize ) {
 
 	$direct_defauts = array(
 		array( 'Le meilleur tarif, garanti', 'En réservant en direct, vous évitez les commissions des plateformes, qui atteignent 15 %. C\'est toujours ici que le prix est le plus doux.', 'check' ),
-		array( 'Un échange direct avec vos hôtes', 'Nous vous répondons personnellement, rapidement, et préparons votre arrivée. Les petites attentions sont possibles sur demande.', 'phone' ),
+		array( 'Un échange direct avec vos hôtes', 'Nous vous répondons personnellement et rapidement, et nous préparons votre arrivée. Petites attentions sur demande — jusqu\'aux huîtres et fruits frais livrés directement à la villa.', 'phone' ),
 		array( 'Souplesse et simplicité', 'Horaires d\'arrivée, demandes particulières, séjours sur mesure : tout se règle en un appel ou un message, sans intermédiaire.', 'calendar' ),
 	);
 

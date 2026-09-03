@@ -113,7 +113,8 @@ function vr_donnees_structurees() {
 				'@type' => 'QuantitativeValue',
 				'value' => (int) get_theme_mod( 'vr_capacite_max', 8 ),
 			),
-			'numberOfBedrooms' => count( vr_contenus( 'vr_chambre' ) ),
+			'numberOfBedrooms'       => count( vr_contenus( 'vr_chambre' ) ),
+			'numberOfBathroomsTotal' => 3,
 			'amenityFeature'   => $equipements,
 		),
 	);

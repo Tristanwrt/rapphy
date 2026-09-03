@@ -1,94 +1,18 @@
 /**
- * Administration — mise en forme des écrans du thème et de la réservation.
+ * Administration — écrans du thème et de la réservation.
  */
 
-/* Champs personnalisés */
+/* Champs personnalisés du thème */
 .vr-meta__row { margin-bottom: 20px; }
 .vr-meta__row label { display: block; margin-bottom: 6px; }
 .vr-meta__row .description { display: block; margin-top: 6px; color: #6b6459; font-style: normal; }
 
-/* Page d'accueil « Ma villa » */
-.vr-admin-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  margin-top: 24px;
-  max-width: 1100px;
-}
-.vr-admin-tile {
-  display: block;
-  padding: 20px 22px;
-  background: #fff;
-  border: 1px solid #dcd8d0;
-  border-left: 3px solid #b08d57;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #211a13;
-  transition: box-shadow 0.15s, transform 0.15s;
-}
+/* Page « Ma villa » */
+.vr-admin-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin-top: 24px; max-width: 1100px; }
+.vr-admin-tile { display: block; padding: 20px 22px; background: #fff; border: 1px solid #dcd8d0; border-left: 3px solid #b08d57; border-radius: 8px; text-decoration: none; color: #211a13; transition: box-shadow 0.15s, transform 0.15s; }
 .vr-admin-tile:hover { box-shadow: 0 6px 18px -8px rgba(33, 26, 19, 0.25); transform: translateY(-2px); color: #211a13; }
 .vr-admin-tile strong { display: block; font-size: 15px; margin-bottom: 4px; }
 .vr-admin-tile span { font-size: 13px; color: #6b6459; }
-
-/* Calendrier de blocage */
-.vr-cal-admin { max-width: 1100px; }
-.vr-cal-admin__rappel {
-  background: #fff8e8;
-  border-left: 4px solid #b08d57;
-  padding: 14px 18px;
-  margin: 20px 0;
-  border-radius: 0 6px 6px 0;
-}
-.vr-cal-admin__annee {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 24px 0 16px;
-}
-.vr-cal-admin__annee h2 { margin: 0; font-size: 20px; }
-
-.vr-cal-admin__grille {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-}
-.vr-cal-admin__mois {
-  background: #fff;
-  border: 1px solid #dcd8d0;
-  border-radius: 8px;
-  padding: 14px;
-}
-.vr-cal-admin__mois h3 {
-  margin: 0 0 10px;
-  font-size: 14px;
-  text-align: center;
-  text-transform: capitalize;
-}
-.vr-cal-admin__dow,
-.vr-cal-admin__jours { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-.vr-cal-admin__dow span { text-align: center; font-size: 11px; color: #8a8378; padding-bottom: 4px; }
-.vr-cal-admin__jour {
-  aspect-ratio: 1;
-  border: 0;
-  background: #f4f1ea;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-  color: #211a13;
-  transition: background-color 0.12s;
-  font-variant-numeric: tabular-nums;
-}
-.vr-cal-admin__jour:hover { background: #e5ddcc; }
-.vr-cal-admin__jour.is-vide { visibility: hidden; }
-.vr-cal-admin__jour.is-passe { opacity: 0.35; cursor: default; }
-.vr-cal-admin__jour.is-bloquee { background: #b08d57; color: #fff; font-weight: 600; }
-.vr-cal-admin__jour.is-reservee { background: #16241f; color: #fff; cursor: help; }
-
-.vr-cal-admin__legende { display: flex; gap: 20px; margin-top: 20px; font-size: 13px; align-items: center; flex-wrap: wrap; }
-.vr-cal-admin__puce { width: 14px; height: 14px; border-radius: 3px; display: inline-block; vertical-align: -2px; margin-right: 6px; }
-.vr-cal-admin__puce--libre { background: #f4f1ea; border: 1px solid #dcd8d0; }
-.vr-cal-admin__puce--bloquee { background: #b08d57; }
-.vr-cal-admin__puce--reservee { background: #16241f; }
 
 /* Fiche réservation */
 .vr-resa-champs { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
@@ -96,11 +20,74 @@
 .vr-resa-champs .description { font-size: 12px; color: #6b6459; }
 .vr-resa-pleine { grid-column: 1 / -1; }
 
-.vr-statut {
-  display: inline-block; padding: 3px 10px; border-radius: 999px;
-  font-size: 12px; font-weight: 600;
-}
+.vr-statut { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
 .vr-statut--option { background: #fdf0d5; color: #8a6516; }
 .vr-statut--confirmee { background: #e3f0e6; color: #1d5b2c; }
 .vr-statut--soldee { background: #16241f; color: #fff; }
 .vr-statut--annulee { background: #f6e3e0; color: #8b2f18; }
+
+/* ═══ Calendrier de gestion ═══ */
+.vr-cal-admin { max-width: 1200px; }
+.vr-cal-admin__rappel { background: #fff8e8; border-left: 4px solid #b08d57; padding: 14px 18px; margin: 20px 0; border-radius: 0 6px 6px 0; line-height: 1.6; }
+.vr-cal-admin__annee { display: flex; align-items: center; gap: 12px; margin: 20px 0 16px; }
+
+.vr-cal-admin__grille { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+.vr-cal-admin__mois { background: #fff; border: 1px solid #dcd8d0; border-radius: 8px; padding: 12px; }
+.vr-cal-admin__mois h3 { margin: 0 0 8px; font-size: 14px; text-align: center; }
+.vr-cal-admin__dow, .vr-cal-admin__jours { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.vr-cal-admin__dow span { text-align: center; font-size: 11px; color: #8a8378; padding-bottom: 3px; }
+
+.vr-cal-admin__jour {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  min-height: 40px; padding: 3px 0; border: 1px solid transparent; border-radius: 5px;
+  background: #f4f1ea; color: #211a13; cursor: pointer; font-size: 12px; line-height: 1.1;
+  transition: box-shadow 0.12s, transform 0.12s; font-variant-numeric: tabular-nums;
+}
+.vr-cal-admin__jour small { font-size: 9.5px; color: #6b6459; font-weight: 600; }
+.vr-cal-admin__jour:hover:not(:disabled) { box-shadow: 0 0 0 2px #b08d57 inset; }
+.vr-cal-admin__jour.is-vide { visibility: hidden; }
+.vr-cal-admin__jour.is-passe { opacity: 0.35; cursor: default; }
+
+.vr-cal-admin__jour.is-basse { background: #eaf2ea; }
+.vr-cal-admin__jour.is-haute { background: #fbe9c8; }
+.vr-cal-admin__jour.is-fermee { background: repeating-linear-gradient(135deg, #f0ede6 0 4px, #e3dfd6 4px 8px); color: #9a9388; }
+.vr-cal-admin__jour.is-fermee small { display: none; }
+.vr-cal-admin__jour.is-bloquee { background: #b08d57; color: #fff; font-weight: 600; }
+.vr-cal-admin__jour.is-bloquee small { color: #fff; }
+.vr-cal-admin__jour.is-reservee { background: #16241f; color: #fff; }
+.vr-cal-admin__jour.is-special { border-color: #c2410c; }
+.vr-cal-admin__jour.is-special small { color: #c2410c; }
+.vr-cal-admin__jour.is-bloquee.is-special small, .vr-cal-admin__jour.is-reservee.is-special small { color: #fff; }
+.vr-cal-admin__jour.is-selection { box-shadow: 0 0 0 2px #2271b1 inset; }
+.vr-cal-admin__jour.is-borne { box-shadow: 0 0 0 3px #2271b1 inset; font-weight: 700; }
+
+.vr-cal-admin__legende { display: flex; gap: 18px; margin-top: 18px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+.vr-cal-admin__puce { width: 14px; height: 14px; border-radius: 3px; display: inline-block; vertical-align: -2px; margin-right: 6px; border: 1px solid transparent; }
+.vr-cal-admin__puce--basse { background: #eaf2ea; border-color: #cfdccf; }
+.vr-cal-admin__puce--haute { background: #fbe9c8; border-color: #ecd4a2; }
+.vr-cal-admin__puce--fermee { background: repeating-linear-gradient(135deg, #f0ede6 0 3px, #dcd7cc 3px 6px); }
+.vr-cal-admin__puce--bloquee { background: #b08d57; }
+.vr-cal-admin__puce--reservee { background: #16241f; }
+.vr-cal-admin__puce--special { background: #fff; border-color: #c2410c; }
+
+/* Bandeau d'action sur la plage */
+.vr-plage { position: sticky; top: 40px; z-index: 5; background: #fff; border: 1px solid #2271b1; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.25); }
+.vr-plage__resume { font-weight: 600; margin-bottom: 10px; }
+.vr-plage__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.vr-plage__actions label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.vr-plage__sep { width: 1px; height: 24px; background: #dcd8d0; margin: 0 4px; }
+
+/* ═══ Tarifs & saisons ═══ */
+.vr-saisons { display: flex; flex-direction: column; gap: 14px; max-width: 1100px; }
+.vr-saison { background: #fff; border: 1px solid #dcd8d0; border-left: 5px solid #cfdccf; border-radius: 8px; padding: 14px 18px; }
+.vr-saison--haute { border-left-color: #ecd4a2; }
+.vr-saison__ligne { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin-bottom: 12px; }
+.vr-saison__ligne:last-child { margin-bottom: 0; }
+.vr-saison__ligne label, .vr-saison__jours > div { display: flex; flex-direction: column; gap: 4px; }
+.vr-saison__ligne label > span, .vr-saison__jours > div > span { font-size: 12px; font-weight: 600; color: #3c3a36; }
+.vr-saison__ligne label em { font-weight: 400; color: #8a8378; }
+.vr-saison__jours { gap: 32px; }
+.vr-saison__jours > div { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.vr-saison__jours > div > span { width: 100%; }
+.vr-saison__jour { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
+.vr-saison__supprimer { margin-left: auto; align-self: center; }

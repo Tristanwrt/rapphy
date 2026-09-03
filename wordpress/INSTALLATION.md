@@ -20,7 +20,7 @@ Pendant l'installation, choisissez le **français** comme langue du site.
 
 2 → Sélectionnez `villa-raffy-theme.zip`, cliquez sur **Installer maintenant**, puis sur **Activer**.
 
-À l'activation, le thème crée automatiquement les contenus de démonstration : les quatre chambres, les douze espaces de la visite guidée, les avis, les atouts, les lieux à découvrir et la FAQ. Le site est immédiatement présentable, même sans photos.
+À l'activation, le thème crée automatiquement les contenus de démonstration : les quatre chambres (Suite Serenity, Chambre Urban Chic, Chambre Fleur de Charme, Suite Refuge des Lumières), les douze espaces de la visite guidée, les avis, les atouts, les lieux à découvrir et la FAQ. Tout se modifie ensuite depuis le menu **Ma villa**. Le site est immédiatement présentable, même sans photos.
 
 ---
 
@@ -40,7 +40,7 @@ Pendant l'installation, choisissez le **français** comme langue du site.
 
 3 → Créez une seconde page nommée « Journal » et désignez-la comme **page des articles** (c'est là que le blog s'affichera).
 
-Le thème détecte automatiquement la page d'accueil et y affiche toutes les sections : la grande image, la visite guidée, les chambres, le calendrier, la carte et la FAQ.
+Le thème détecte automatiquement la page d'accueil et y affiche toutes les sections, dans cet ordre : grande image, chiffres clés, « Réserver en direct », visite guidée, la villa, les chambres, les deux formules de séjour, piscine & jardin, vidéo, avis, calendrier de réservation, la région, FAQ.
 
 ---
 
@@ -48,17 +48,20 @@ Le thème détecte automatiquement la page d'accueil et y affiche toutes les sec
 
 Allez dans **Apparence → Personnaliser**. Tout se règle depuis là, sans jamais toucher au code :
 
-- **Vos coordonnées** — téléphone, WhatsApp, email, adresse, lien Airbnb
+- **Vos coordonnées** — téléphone, WhatsApp, email, adresse, lien Airbnb, lien vers vos avis Google (les deux logos de la section Avis renvoient vers ces pages)
 - **Grande image d'accueil** — la photo plein écran et les textes du haut de page
 - **Vos arguments de confiance** — les mentions sous la grande image et les quatre chiffres de la section Avis
-- **Règles de réservation** — nuits minimum, nombre de voyageurs maximum, horaires
-- **Chiffres clés** — une ligne par chiffre, au format `valeur | légende | icône`
+- **Règles de réservation** — nombre de voyageurs maximum, horaires (les prix et les saisons se règlent dans l'extension, voir l'étape 7)
+- **Chiffres clés** — une ligne par chiffre, au format `valeur | légende | icône` (huit chiffres par défaut, dont l'écran géant de 3,5 m et la salle de sport privée)
 - **Bloc « Réserver en direct »** — les trois arguments
-- **Titres et textes des sections**
+- **Titres et textes des sections** — dont les deux textes de la section « Deux façons de séjourner » (villa complète / formule cocooning)
+- **Vidéo de la villa** — déposez un montage MP4 : il se lance en boucle, sans son, dans la section « La villa en mouvement ». Sans vidéo, cette section enchaîne automatiquement en fondu les photos de la visite guidée.
 - **Carte de localisation** — latitude et longitude
 - **Pied de page**
 
 ⚠️ **L'email renseigné ici est celui qui recevra les demandes de réservation.** À vérifier en priorité.
+
+Pour le lien des avis Google : ouvrez votre fiche Google Maps, cliquez sur « Avis », puis copiez l'adresse de la page.
 
 ---
 
@@ -70,23 +73,53 @@ Allez dans **Médias → Ajouter**, déposez toutes les photos d'un coup, puis r
 - Les photos des chambres : **Ma villa → Chambres**, une image mise en avant par chambre
 - Les photos de la visite guidée : **Ma villa → Visite guidée**, une image par espace
 
-Les photos de la visite guidée alimentent aussi la galerie de la section « La villa » et la mosaïque « Piscine & jardin » : vous ne les déposez qu'une seule fois.
+Les photos de la visite guidée alimentent aussi la galerie de la section « La villa », la mosaïque « Piscine, plage & jardin » (les espaces dont la zone contient « extérieur », « piscine », « jardin » ou « plage ») et le diaporama de la section vidéo : vous ne les déposez qu'une seule fois.
+
+Les photos préparées sur Canva doivent être téléchargées depuis Canva (Partager → Télécharger → JPG, qualité maximale) puis déposées dans **Médias** comme les autres.
 
 Tant qu'une photo manque, un dégradé élégant s'affiche à sa place avec le nom de la pièce — le site reste présentable.
 
 ---
 
-## 7 → Prendre en main le calendrier
+## 7 → Régler les tarifs et les saisons
 
-Le menu **Réservations** contient deux écrans :
+Le menu **Réservations → Tarifs & saisons** pilote tout ce que le calendrier public affiche. Aucune ligne de code à toucher.
 
-**Calendrier** — la vue de l'année entière. Un clic sur un jour le bloque, un second clic le libère. N'oubliez pas d'enregistrer en bas de page. Les dates bloquées deviennent immédiatement indisponibles sur le calendrier public du site.
+**Capacités** — le nombre de voyageurs maximum pour la villa complète (8) et pour la formule Cocooning (4).
 
-**Toutes les réservations** — le carnet. Chaque fiche contient le nom du voyageur, ses coordonnées, les dates, le nombre de personnes, le tarif, l'acompte reçu, le statut et vos notes. Les réservations dont le statut est *Option*, *Confirmée* ou *Soldée* bloquent automatiquement leurs dates sur le site : inutile de les bloquer une seconde fois dans le calendrier.
+**Saisons** — une ligne par période, avec pour chacune :
 
-En haut du carnet, un résumé affiche les séjours à venir, le nombre de nuits louées, le taux d'occupation et le chiffre d'affaires de l'année.
+- ses dates de début et de fin (jour/mois, valables chaque année)
+- son type : *basse saison* ou *haute saison*
+- le nombre de nuits minimum
+- les jours d'arrivée et de départ autorisés (cochez uniquement « samedi » pour imposer le samedi au samedi)
+- le prix par nuit de la villa complète
+- le prix par nuit de la formule Cocooning — laissez vide pour ne pas la proposer sur cette période
 
-⚠️ **Important :** il n'y a pas de synchronisation avec Airbnb ou Booking. Si vous acceptez une réservation sur une plateforme, pensez à bloquer les dates dans le calendrier.
+Les trois saisons demandées sont déjà en place : mai–juin (290 € / 190 €, arrivées libres, 2 nuits minimum), juillet–août (350 €, samedi au samedi, 7 nuits minimum, pas de Cocooning), septembre (290 € / 190 €). **Toute date qui n'est couverte par aucune saison est fermée** : d'octobre à avril, le calendrier affiche « fermé ». Pour ouvrir une période, ajoutez simplement une saison.
+
+Sur le site, le visiteur choisit sa formule, voit le prix sous chaque jour, et le total se calcule sous ses yeux : « 7 nuits × 350 € = 2 450 € ». Le message WhatsApp ou l'email qu'il vous envoie reprend la formule, les dates, le nombre de voyageurs et ce total.
+
+---
+
+## 8 → Prendre en main le calendrier
+
+Le menu **Réservations** contient trois écrans :
+
+**Calendrier** — la vue de l'année entière, avec le prix sous chaque jour et une couleur par état (basse saison, haute saison, fermé, bloqué, réservé, tarif spécial). Cliquez sur un premier jour, puis sur un dernier jour : la plage se surligne et une barre apparaît avec les actions possibles :
+
+- **Bloquer ces dates** / **Libérer ces dates** — pour vos séjours personnels, des travaux, ou une réservation prise ailleurs
+- **Appliquer ce tarif** — un prix spécial pour cette plage (Pentecôte, pont du 15 août…), pour la villa et/ou le Cocooning ; **Retirer le tarif spécial** revient à la grille des saisons
+
+Un seul jour ? Cliquez deux fois dessus. Les changements sont visibles immédiatement sur le site.
+
+**Toutes les réservations** — le carnet. Chaque fiche contient le nom du voyageur, ses coordonnées, les dates, la formule, le nombre de personnes, le tarif (calculé automatiquement selon la grille, modifiable), l'acompte reçu, le statut et vos notes. Les réservations dont le statut est *Option*, *Confirmée* ou *Soldée* bloquent automatiquement leurs dates sur le site : inutile de les bloquer une seconde fois dans le calendrier.
+
+En haut du carnet, un résumé affiche les séjours à venir, le nombre de nuits louées, le taux d'occupation sur les nuits ouvertes et le chiffre d'affaires de l'année.
+
+**Tarifs & saisons** — voir l'étape 7.
+
+⚠️ **Important :** il n'y a pas de synchronisation avec Airbnb ou Booking, c'est voulu. Si vous acceptez une réservation sur une plateforme, bloquez les dates dans le calendrier (deux clics).
 
 ---
 

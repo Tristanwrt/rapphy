@@ -60,6 +60,7 @@ function vrr_champs() {
 		'vrr_arrivee'   => array( 'label' => 'Date d\'arrivée', 'type' => 'date' ),
 		'vrr_depart'    => array( 'label' => 'Date de départ', 'type' => 'date', 'aide' => 'La villa se libère ce jour-là : cette date reste réservable pour un autre séjour.' ),
 		'vrr_statut'    => array( 'label' => 'Statut', 'type' => 'select', 'options' => 'statuts' ),
+		'vrr_formule'   => array( 'label' => 'Formule', 'type' => 'select', 'options' => 'formules' ),
 		'vrr_personnes' => array( 'label' => 'Nombre de voyageurs', 'type' => 'number' ),
 		'vrr_telephone' => array( 'label' => 'Téléphone', 'type' => 'tel' ),
 		'vrr_email'     => array( 'label' => 'Email', 'type' => 'email' ),
@@ -106,7 +107,16 @@ function vrr_afficher_metabox( $post ) {
 				esc_textarea( $valeur )
 			);
 		} elseif ( 'select' === $champ['type'] ) {
-			$options = ( 'statuts' === $champ['options'] ) ? vrr_statuts() : vrr_origines();
+			if ( 'statuts' === $champ['options'] ) {
+				$options = vrr_statuts();
+			} elseif ( 'formules' === $champ['options'] ) {
+				$options = array();
+				foreach ( vrr_formules() as $cle_formule => $formule ) {
+					$options[ $cle_formule ] = $formule['nom'] . ' (jusqu\'à ' . $formule['capacite'] . ' voyageurs)';
+				}
+			} else {
+				$options = vrr_origines();
+			}
 			printf( '<select id="%s" name="%s" class="widefat">', esc_attr( $cle ), esc_attr( $cle ) );
 			foreach ( $options as $valeur_option => $libelle ) {
 				printf(
@@ -140,12 +150,26 @@ function vrr_afficher_metabox( $post ) {
 	$arrivee = get_post_meta( $post->ID, 'vrr_arrivee', true );
 	$depart  = get_post_meta( $post->ID, 'vrr_depart', true );
 
-	if ( vrr_date_valide( $arrivee ) && vrr_date_valide( $depart ) ) {
-		$nuits = ( new DateTimeImmutable( $arrivee ) )->diff( new DateTimeImmutable( $depart ) )->days;
+	if ( vrr_date_valide( $arrivee ) && vrr_date_valide( $depart ) && $depart > $arrivee ) {
+		$nuits   = ( new DateTimeImmutable( $arrivee ) )->diff( new DateTimeImmutable( $depart ) )->days;
+		$formule = get_post_meta( $post->ID, 'vrr_formule', true ) ?: 'complete';
+		$total   = 0;
+		$complet = true;
+
+		foreach ( vrr_plage( $arrivee, ( new DateTimeImmutable( $depart ) )->modify( '-1 day' )->format( 'Y-m-d' ) ) as $nuit ) {
+			$prix = vrr_jour( $nuit )['prix'][ $formule ];
+			if ( null === $prix ) {
+				$complet = false;
+				break;
+			}
+			$total += $prix;
+		}
+
 		printf(
-			'<p style="margin-top:18px;padding-top:14px;border-top:1px solid #e5e0d8"><strong>Durée du séjour :</strong> %d nuit%s</p>',
+			'<p style="margin-top:18px;padding-top:14px;border-top:1px solid #e5e0d8"><strong>Durée du séjour :</strong> %d nuit%s%s</p>',
 			(int) $nuits,
-			$nuits > 1 ? 's' : ''
+			$nuits > 1 ? 's' : '',
+			$complet ? ' · <strong>Tarif calculé selon la grille :</strong> ' . esc_html( number_format_i18n( $total ) ) . ' € (à reporter dans « Tarif total » si vous le confirmez)' : ''
 		);
 	}
 }
@@ -202,6 +226,7 @@ function vrr_colonnes( $colonnes ) {
 		'title'          => 'Voyageur',
 		'vrr_dates'      => 'Dates',
 		'vrr_nuits'      => 'Nuits',
+		'vrr_formule'    => 'Formule',
 		'vrr_personnes'  => 'Pers.',
 		'vrr_statut'     => 'Statut',
 		'vrr_tarif'      => 'Tarif',
@@ -234,6 +259,12 @@ function vrr_afficher_colonne( $colonne, $post_id ) {
 			} else {
 				echo '—';
 			}
+			break;
+
+		case 'vrr_formule':
+			$formules = vrr_formules();
+			$formule  = get_post_meta( $post_id, 'vrr_formule', true );
+			echo esc_html( isset( $formules[ $formule ] ) ? $formules[ $formule ]['nom'] : '—' );
 			break;
 
 		case 'vrr_personnes':

@@ -3,7 +3,7 @@ Theme Name: Villa Raffy
 Theme URI: https://www.villa-raffy.fr/
 Author: Tristan Wiart
 Description: Thème sur mesure pour la Villa Raffy — location de villa de luxe en Lot-et-Garonne. Design premium, visite guidée animée, moteur de réservation en direct.
-Version: 1.0.0
+Version: 1.1.0
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -308,7 +308,7 @@ button { font: inherit; }
 
 .vr-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 24px; }
 @media (min-width: 640px) { .vr-stats { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 1024px) { .vr-stats { grid-template-columns: repeat(6, 1fr); } }
+@media (min-width: 1024px) { .vr-stats { grid-template-columns: repeat(4, 1fr); gap: 48px 32px; } }
 .vr-stat { text-align: center; }
 .vr-stat__icon {
   width: 48px; height: 48px; margin: 0 auto 12px;
@@ -437,6 +437,11 @@ button { font: inherit; }
 .vr-formule li { display: flex; align-items: center; gap: 12px; }
 .vr-formule li svg { color: var(--brass); flex: none; }
 .vr-formule .vr-btn { margin-top: 32px; align-self: flex-start; }
+.vr-formule__prix { margin-top: 28px; display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.vr-formule__montant { display: block; font-family: var(--font-display); font-size: 2.125rem; font-weight: 500; line-height: 1.05; color: var(--brass); }
+.vr-formule__unite { display: block; margin-top: 6px; font-size: 0.75rem; line-height: 1.5; opacity: 0.75; }
+.vr-formule--dark .vr-formule__unite { color: rgba(251, 249, 244, 0.85); }
+.vr-formule--light .vr-formule__unite { color: var(--ink-soft); }
 
 /* Extérieurs (section sombre) */
 .vr-dark { background: var(--night); color: var(--linen); }
@@ -447,9 +452,21 @@ button { font: inherit; }
 .vr-mosaic__b { grid-column: span 5; height: 288px; }
 .vr-mosaic__c { grid-column: span 5; height: 256px; }
 .vr-mosaic__d { grid-column: span 7; height: 256px; }
+.vr-mosaic__e { grid-column: span 12; height: 256px; }
 @media (min-width: 1024px) {
   .vr-mosaic__a, .vr-mosaic__b { height: 416px; }
   .vr-mosaic__c, .vr-mosaic__d { height: 320px; }
+  .vr-mosaic__e { height: 360px; }
+}
+.vr-mosaic .vr-media { position: relative; }
+.vr-mosaic .vr-media img { transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+.vr-mosaic .vr-media:hover img { transform: scale(1.04); }
+.vr-mosaic__legende {
+  position: absolute; left: 20px; bottom: 18px;
+  padding: 7px 14px; border-radius: 999px;
+  background: rgba(22, 36, 31, 0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  color: var(--linen); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  pointer-events: none;
 }
 .vr-dark__points { margin-top: 56px; display: grid; gap: 40px; }
 @media (min-width: 768px) { .vr-dark__points { grid-template-columns: repeat(3, 1fr); } }
@@ -461,6 +478,34 @@ button { font: inherit; }
 }
 .vr-point h3 { color: var(--linen); }
 .vr-point p { margin-top: 6px; font-size: 0.875rem; color: rgba(251, 249, 244, 0.7); }
+
+/* Section vidéo / diaporama */
+.vr-film { background: var(--night); color: var(--linen); padding-block: 80px; border-top: 1px solid rgba(251, 249, 244, 0.06); }
+@media (min-width: 1024px) { .vr-film { padding-block: 112px; } }
+.vr-film__cadre {
+  position: relative; max-width: 72rem; margin-inline: auto;
+  aspect-ratio: 16 / 9; border-radius: var(--radius-lg); overflow: hidden;
+  background: #0d1512; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7);
+}
+.vr-film__cadre video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.vr-diapo { position: absolute; inset: 0; }
+.vr-diapo__vue {
+  position: absolute; inset: 0; margin: 0;
+  opacity: 0; transform: scale(1.06);
+  transition: opacity 1.4s ease, transform 1.4s ease;
+}
+.vr-diapo__vue.is-active { opacity: 1; transform: scale(1); transition: opacity 1.4s ease, transform 9s linear; }
+.vr-diapo__vue img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vr-diapo__vue figcaption {
+  position: absolute; left: 28px; bottom: 24px;
+  font-family: var(--font-display); font-size: 1.125rem; font-weight: 500;
+  color: var(--linen); text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+}
+.vr-diapo__vue::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(22, 36, 31, 0.55), transparent 40%);
+  pointer-events: none;
+}
 
 /* ═══════════════════════════════════════════════════════════
    10. AVIS
@@ -484,6 +529,18 @@ button { font: inherit; }
 .vr-quote figcaption strong { color: var(--ink); font-weight: 500; }
 .vr-quote__source { display: block; margin-top: 2px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brass); }
 
+.vr-plateformes { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+.vr-plateforme {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 12px 22px; border-radius: 999px;
+  background: var(--linen); border: 1px solid rgba(33, 26, 19, 0.08);
+  box-shadow: var(--shadow-card);
+  color: var(--ink); font-size: 0.875rem; font-weight: 500; text-decoration: none;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.vr-plateforme:hover { transform: translateY(-2px); border-color: rgba(176, 141, 87, 0.5); }
+.vr-plateforme svg { width: 22px; height: 22px; flex: none; }
+
 /* ═══════════════════════════════════════════════════════════
    11. RÉSERVATION (calendrier public)
    ═══════════════════════════════════════════════════════════ */
@@ -495,6 +552,27 @@ button { font: inherit; }
   padding: 24px; box-shadow: var(--shadow-soft);
 }
 @media (min-width: 640px) { .vr-booking__panel { padding: 40px; } }
+
+/* Choix de la formule */
+.vr-formules-choix {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  padding: 6px; margin-bottom: 28px;
+  background: var(--canvas-deep); border-radius: 18px;
+}
+.vr-formule-btn {
+  border: 0; background: none; border-radius: 13px; cursor: pointer;
+  padding: 14px 18px; text-align: left; color: var(--ink-soft);
+  transition: background-color 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.vr-formule-btn__nom { display: block; font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+.vr-formule-btn__info { display: block; margin-top: 3px; font-size: 0.72rem; line-height: 1.4; }
+.vr-formule-btn:hover { background: rgba(176, 141, 87, 0.12); }
+.vr-formule-btn.is-active { background: var(--night); color: rgba(251, 249, 244, 0.7); box-shadow: var(--shadow-card); }
+.vr-formule-btn.is-active .vr-formule-btn__nom { color: var(--linen); }
+.vr-formule-btn:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+@media (max-width: 480px) {
+  .vr-formules-choix { grid-template-columns: 1fr; }
+}
 
 .vr-cal__nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 12px; }
 .vr-cal__arrow {
@@ -510,6 +588,7 @@ button { font: inherit; }
 .vr-cal__chip { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 .vr-cal__chip--sel { background: var(--brass); }
 .vr-cal__chip--off { background: rgba(33, 26, 19, 0.12); }
+.vr-cal__chip--closed { background: transparent; border: 1px dashed rgba(33, 26, 19, 0.3); }
 
 .vr-cal__months { display: grid; gap: 40px; }
 @media (min-width: 768px) { .vr-cal__months { grid-template-columns: 1fr 1fr; } }
@@ -520,20 +599,32 @@ button { font: inherit; }
 .vr-cal__dow { text-align: center; font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 4px; }
 .vr-cal__dow span { padding-block: 4px; font-weight: 500; }
 .vr-cal__day {
-  height: 40px; width: 100%;
-  display: flex; align-items: center; justify-content: center;
+  height: 52px; width: 100%; padding: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   border: 0; background: none; border-radius: 10px;
   font-size: 0.875rem; color: var(--ink); cursor: pointer;
   transition: background-color 0.15s, color 0.15s;
   font-variant-numeric: tabular-nums;
 }
+.vr-cal__num { line-height: 1; }
+.vr-cal__prix { font-size: 0.62rem; line-height: 1; color: var(--ink-soft); letter-spacing: 0.01em; white-space: nowrap; }
+.vr-cal__day.is-haute .vr-cal__prix { color: var(--brass); font-weight: 500; }
+.vr-cal__day.is-off { color: rgba(33, 26, 19, 0.45); }
+.vr-cal__day.is-off .vr-cal__prix { color: rgba(33, 26, 19, 0.3); }
+.vr-cal__day.is-no-arrival .vr-cal__num { color: var(--ink-soft); }
+.vr-cal__day.is-checkout-only { color: rgba(33, 26, 19, 0.45); background: linear-gradient(135deg, rgba(33, 26, 19, 0.06) 50%, transparent 50%); }
 .vr-cal__day:hover:not(:disabled):not(.is-edge) { background: rgba(176, 141, 87, 0.2); }
-.vr-cal__day:disabled { color: rgba(33, 26, 19, 0.25); text-decoration: line-through; cursor: not-allowed; }
+.vr-cal__day:disabled { color: rgba(33, 26, 19, 0.28); cursor: not-allowed; }
+.vr-cal__day:disabled .vr-cal__num { text-decoration: line-through; }
+.vr-cal__day.is-closed:disabled { color: rgba(33, 26, 19, 0.2); }
+.vr-cal__day.is-closed:disabled .vr-cal__num { text-decoration: none; }
 .vr-cal__day.is-range { background: rgba(176, 141, 87, 0.15); }
 .vr-cal__day.is-edge { background: var(--brass); color: var(--linen); font-weight: 500; }
+.vr-cal__day.is-edge .vr-cal__prix, .vr-cal__day.is-edge .vr-cal__num { color: var(--linen); }
 .vr-cal__day.is-empty { visibility: hidden; }
 
-.vr-cal__error { margin-top: 20px; text-align: center; font-size: 0.875rem; color: var(--danger); }
+.vr-cal__regle { margin-top: 20px; text-align: center; font-size: 0.8rem; line-height: 1.6; color: var(--ink-soft); }
+.vr-cal__error { margin-top: 16px; text-align: center; font-size: 0.875rem; color: var(--danger); }
 
 .vr-recap { margin-top: 32px; border-top: 1px solid rgba(33, 26, 19, 0.1); padding-top: 32px; }
 .vr-recap__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px 40px; text-align: center; }
@@ -548,7 +639,19 @@ button { font: inherit; }
   transition: border-color 0.2s, color 0.2s;
 }
 .vr-stepper button:hover { border-color: var(--brass); color: var(--brass); }
+.vr-stepper button:disabled { opacity: 0.3; cursor: not-allowed; border-color: rgba(33, 26, 19, 0.15); color: var(--ink); }
 .vr-stepper output { width: 24px; font-family: var(--font-display); font-weight: 500; }
+
+/* Total du séjour */
+.vr-total {
+  margin-top: 28px; padding: 22px 24px;
+  border-radius: var(--radius); background: var(--canvas-deep);
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 14px;
+  text-align: center;
+}
+.vr-total__calcul { font-size: 0.95rem; color: var(--ink-soft); }
+.vr-total__montant { font-family: var(--font-display); font-size: 2rem; font-weight: 500; line-height: 1.1; color: var(--brass); }
+.vr-total__note { width: 100%; margin-top: 6px; font-size: 0.72rem; line-height: 1.5; color: var(--ink-soft); }
 
 .vr-actions { margin-top: 32px; display: grid; gap: 12px; }
 @media (min-width: 640px) { .vr-actions { grid-template-columns: repeat(3, 1fr); } }
