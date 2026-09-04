@@ -159,8 +159,16 @@ function vr_en_assets() {
 add_action( 'wp_enqueue_scripts', 'vr_en_assets', 20 );
 
 /**
- * Le bouton FR / EN, en bas à gauche de chaque page.
+ * Le sélecteur de langue : deux drapeaux (France, Royaume-Uni), en bas de chaque page.
+ * Dessinés en SVG, ils s'affichent pareil sur tous les appareils (les emojis, non).
  */
+function vr_en_drapeau( $langue ) {
+	if ( 'fr' === $langue ) {
+		return '<svg viewBox="0 0 30 30" aria-hidden="true" focusable="false"><rect width="10" height="30" fill="#0055A4"/><rect x="10" width="10" height="30" fill="#fff"/><rect x="20" width="10" height="30" fill="#EF4135"/></svg>';
+	}
+	return '<svg viewBox="15 0 30 30" aria-hidden="true" focusable="false"><clipPath id="vr-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#vr-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg>';
+}
+
 function vr_en_bouton_langue() {
 	$chemin  = vr_en_chemin_courant();
 	$base    = untrailingslashit( get_option( 'home' ) );
@@ -168,12 +176,14 @@ function vr_en_bouton_langue() {
 	$en      = $base . VR_EN_PREFIXE . $chemin;
 	$anglais = vr_en_actif();
 	printf(
-		'<nav class="vr-langue" aria-label="%s"><a href="%s" hreflang="fr"%s>FR</a><a href="%s" hreflang="en"%s>EN</a></nav>',
+		'<nav class="vr-langue" aria-label="%1$s"><a href="%2$s" hreflang="fr" lang="fr" title="Français" aria-label="Français"%3$s>%4$s</a><a href="%5$s" hreflang="en" lang="en" title="English" aria-label="English"%6$s>%7$s</a></nav>',
 		$anglais ? 'Language' : 'Langue',
 		esc_url( $fr ),
 		$anglais ? '' : ' aria-current="true"',
+		vr_en_drapeau( 'fr' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		esc_url( $en ),
-		$anglais ? ' aria-current="true"' : ''
+		$anglais ? ' aria-current="true"' : '',
+		vr_en_drapeau( 'en' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	);
 }
 add_action( 'wp_footer', 'vr_en_bouton_langue' );

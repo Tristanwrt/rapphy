@@ -929,12 +929,12 @@ a.vr-badge:hover { transform: translateY(-5px); box-shadow: var(--shadow-soft); 
 
 .vr-langue {
   position: fixed; left: 18px; bottom: 18px; z-index: 900;
-  display: flex; gap: 2px; padding: 3px; border-radius: 999px;
+  display: flex; gap: 4px; padding: 4px; border-radius: 999px;
   background: rgba(22, 36, 31, 0.88); box-shadow: var(--shadow-card);
   backdrop-filter: blur(6px);
-  font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
 }
-.vr-langue a { display: inline-block; padding: 6px 11px; border-radius: 999px; color: rgba(251, 249, 244, 0.72); transition: background-color 0.2s, color 0.2s; }
-.vr-langue a:hover, .vr-langue a:focus-visible { color: var(--linen); }
-.vr-langue a[aria-current="true"] { background: var(--brass); color: var(--night); }
+.vr-langue a { display: block; padding: 2px; border-radius: 999px; opacity: 0.55; transition: opacity 0.2s, box-shadow 0.2s; }
+.vr-langue a svg { display: block; width: 26px; height: 26px; border-radius: 50%; }
+.vr-langue a:hover, .vr-langue a:focus-visible { opacity: 1; }
+.vr-langue a[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--brass); }
 @media (max-width: 600px) { .vr-langue { left: auto; right: 12px; bottom: 12px; } .vr-tour__hint { padding-right: 96px; text-align: left; } }
