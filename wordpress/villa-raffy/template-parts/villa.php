@@ -15,7 +15,8 @@ $vr_atouts = vr_contenus( 'vr_atout' );
 $vr_photos = vr_contenus( 'vr_espace', 3 );
 ?>
 
-<section class="vr-section vr-wrap" id="villa">
+<section class="vr-section" id="villa">
+<div class="vr-wrap">
 	<div class="vr-split">
 
 		<div class="vr-split__body vr-reveal">
@@ -57,4 +58,5 @@ $vr_photos = vr_contenus( 'vr_espace', 3 );
 		<?php endif; ?>
 
 	</div>
+</div>
 </section>

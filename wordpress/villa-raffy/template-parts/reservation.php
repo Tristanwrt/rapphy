@@ -83,7 +83,8 @@ if ( function_exists( 'vrr_saisons' ) ) {
 }
 ?>
 
-<section class="vr-section vr-booking vr-wrap" id="reserver">
+<section class="vr-section vr-booking" id="reserver">
+<div class="vr-wrap">
 
 	<div class="vr-reveal vr-center" style="margin-bottom:48px">
 		<p class="vr-eyebrow">Réservation</p>
@@ -185,4 +186,5 @@ if ( function_exists( 'vrr_saisons' ) ) {
 		</div>
 
 	</div>
+</div>
 </section>

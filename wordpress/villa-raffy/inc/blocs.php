@@ -27,7 +27,8 @@ function vr_blocs_definitions() {
 			'icone'       => 'cover-image',
 			'part'        => 'hero',
 			'champs'      => array(
-				'image'     => array( 'type' => 'image', 'label' => 'Photo plein écran', 'mod' => 'vr_hero_image' ),
+				'disposition' => array( 'type' => 'select', 'label' => 'Disposition', 'mod' => 'vr_hero_disposition', 'aide' => '« Photo à droite » : le titre et la barre de recherche à gauche, la photo encadrée à droite.', 'options' => array( 'plein' => 'Photo plein écran', 'droite' => 'Photo à droite du texte' ) ),
+				'image'     => array( 'type' => 'image', 'label' => 'Photo', 'mod' => 'vr_hero_image' ),
 				'position'  => array( 'type' => 'select', 'label' => 'Point fort de la photo', 'mod' => 'vr_hero_position', 'aide' => 'La partie à garder quand l\'écran est plus large que la photo. « Bas » si la piscine est en bas.', 'options' => array( 'haut' => 'Le haut de la photo', 'centre' => 'Le centre', 'bas' => 'Le bas de la photo' ) ),
 				'surtitre'  => array( 'type' => 'text', 'label' => 'Petite ligne au-dessus du titre', 'mod' => 'vr_hero_surtitre' ),
 				'titre'     => array( 'type' => 'textarea', 'label' => 'Grand titre', 'mod' => 'vr_hero_titre' ),
@@ -70,7 +71,8 @@ function vr_blocs_definitions() {
 			'apercu'      => true,
 			'note'        => 'Les pièces, leurs photos et leur ordre se gèrent dans Ma villa → Visite guidée.',
 			'champs'      => array(
-				'titre' => array( 'type' => 'text', 'label' => 'Titre', 'mod' => 'vr_visite_titre' ),
+				'titre'     => array( 'type' => 'text', 'label' => 'Titre', 'mod' => 'vr_visite_titre' ),
+				'affichage' => array( 'type' => 'select', 'label' => 'Affichage des photos', 'mod' => 'vr_visite_affichage', 'aide' => '« Encadrée » garde les photos nettes, même sur grand écran. « Plein écran » demande des photos d\'au moins 2500 px.', 'options' => array( 'encadre' => 'Photo encadrée, texte à côté', 'plein' => 'Photo plein écran' ) ),
 			),
 		),
 		'villa' => array(
@@ -258,7 +260,16 @@ function vr_enregistrer_blocs() {
 			'category'        => 'villa-raffy',
 			'icon'            => $def['icone'],
 			'attributes'      => $attributs,
-			'supports'        => array( 'html' => false, 'multiple' => false, 'reusable' => false, 'customClassName' => false ),
+			'supports'        => array(
+				'html'            => false,
+				'multiple'        => false,
+				'reusable'        => false,
+				'customClassName' => false,
+				// Réglages natifs de WordPress dans la colonne de droite, onglet Styles : Couleur et Dimensions.
+				// (Pas de typographie : les tailles de texte du thème forment un système cohérent.)
+				'color'           => array( 'background' => true, 'text' => true, 'gradients' => true, 'link' => false ),
+				'spacing'         => array( 'padding' => true, 'margin' => array( 'top', 'bottom' ) ),
+			),
 			'editor_script'   => 'vr-blocs',
 			'render_callback' => function ( $attributs ) use ( $cle ) {
 				return vr_bloc_rendre( $cle, $attributs );
@@ -332,7 +343,45 @@ function vr_bloc_rendre( $cle, $attributs ) {
 		remove_filter( $filtre[0], $filtre[1], 20 );
 	}
 
+	// Les couleurs et espacements choisis dans l'éditeur se posent sur la balise <section>,
+	// sur le site comme dans l'aperçu de l'éditeur.
+	$html = vr_bloc_appliquer_reglages( $html );
+
 	return $html;
+}
+
+/**
+ * Pose sur la première balise du bloc les classes et le style générés par les
+ * réglages natifs (couleur de fond, de texte, marges, taille de police).
+ */
+function vr_bloc_appliquer_reglages( $html ) {
+	if ( ! class_exists( 'WP_Block_Supports' ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
+		return $html;
+	}
+
+	$reglages = WP_Block_Supports::get_instance()->apply_block_supports();
+	if ( empty( $reglages ) ) {
+		return $html;
+	}
+
+	$balise = new WP_HTML_Tag_Processor( $html );
+	if ( ! $balise->next_tag() ) {
+		return $html;
+	}
+
+	if ( ! empty( $reglages['class'] ) ) {
+		foreach ( explode( ' ', $reglages['class'] ) as $classe ) {
+			if ( $classe ) {
+				$balise->add_class( $classe );
+			}
+		}
+	}
+	if ( ! empty( $reglages['style'] ) ) {
+		$existant = (string) $balise->get_attribute( 'style' );
+		$balise->set_attribute( 'style', trim( $existant . ( $existant && ';' !== substr( rtrim( $existant ), -1 ) ? ';' : '' ) . $reglages['style'] ) );
+	}
+
+	return $balise->get_updated_html();
 }
 
 /**

@@ -144,15 +144,34 @@ En haut du carnet, un résumé affiche les séjours à venir, le nombre de nuits
 
 ## 9 → La version anglaise
 
-L'extension **villa-raffy-english.zip** ajoute une version anglaise du site à l'adresse `/en/` (par exemple `villa-raffy.fr/en/`), sans dupliquer les contenus. Elle reprend la page française et remplace chaque texte par sa traduction, calendrier et message WhatsApp compris. Un petit bouton FR / EN apparaît en bas à gauche de chaque page.
+Le thème contient une version anglaise du site, à l'adresse `/en/` (par exemple `villa-raffy.fr/en/`), sans extension et sans dupliquer les contenus. Elle reprend la page française et remplace chaque texte par sa traduction, calendrier et message WhatsApp compris. Un petit bouton FR / EN apparaît en bas de chaque page, et Google reçoit les balises hreflang qui relient les deux versions.
 
-1 → **Extensions → Ajouter → Téléverser une extension**, choisir `villa-raffy-english.zip`, **Installer**, puis **Activer**.
+1 → Rien à installer : ouvrez `/en/`, le site est en anglais.
 
-2 → Ouvrir `/en/` : le site est en anglais. Google reçoit aussi les balises hreflang qui relient les deux versions.
-
-3 → Pour corriger une traduction ou en ajouter une : **Réglages → Version anglaise**. Le dictionnaire se présente ainsi : une ligne en français (exactement comme sur le site), la ligne suivante en anglais, une ligne vide entre chaque paire. Enregistrer.
+2 → Pour corriger une traduction ou en ajouter une : **Réglages → Version anglaise**. Le dictionnaire se présente ainsi : une ligne en français (exactement comme sur le site), la ligne suivante en anglais, une ligne vide entre chaque paire. Enregistrer.
 
 ⚠️ Quand vous changez un texte français sur le site, il reste en français sur la version anglaise tant que sa traduction n'est pas ajoutée. L'écran **Réglages → Version anglaise** liste les textes rencontrés sans traduction et un bouton les ajoute en bas du dictionnaire : il ne reste qu'à écrire l'anglais sous chacun. Les prix, numéros de téléphone, emails et prénoms ne sont jamais traduits.
+
+Si l'ancienne extension « Villa Raffy — Version anglaise » est encore installée, désactivez-la et supprimez-la (Extensions) : le thème reprend son dictionnaire tel quel.
+
+---
+
+## 10 → Couleurs, espacements et dispositions
+
+**Les couleurs de tout le site** : Apparence → Personnaliser → **Couleurs du site**. Cinq couleurs (fond, fond alterné, texte, accent doré, fond sombre) : changez-en une, toutes les sections suivent.
+
+**Une section en particulier** : dans la page Accueil, cliquez sur la section, puis dans la colonne de droite sur l'onglet **Styles** (le petit cercle à moitié noir, à côté de la roue dentée). Vous y trouvez :
+
+- **Couleur** : couleur du texte et de l'arrière-plan (avec la palette du site, ou n'importe quelle couleur), dégradés compris.
+- **Dimensions** : marges internes (l'espace au-dessus et au-dessous du contenu) et marges externes.
+
+L'onglet avec la **roue dentée** contient les textes et les photos de la section, comme avant.
+
+**La grande image d'accueil** a deux dispositions, au choix dans le bloc (ou Personnaliser → Grande image d'accueil → Disposition) : *Photo plein écran* derrière le texte, ou *Photo à droite du texte* dans un cadre, à côté de la barre de recherche.
+
+**La visite guidée** a deux affichages (bloc Visite guidée, ou Personnaliser → Titres et textes des sections) : *Photo encadrée, texte à côté* (net avec les photos actuelles, recommandé) ou *Photo plein écran* (demande des photos d'au moins 2500 px).
+
+**Les photos anciennes** : quand le thème agrandit ses formats d'images, les grandes tailles manquantes des photos déjà déposées sont recréées automatiquement à leur premier affichage. Rien à faire.
 
 ---
 

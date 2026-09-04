@@ -9,11 +9,11 @@
 ( function () {
 	'use strict';
 
-	if ( ! window.vreData || ! document.body.classList.contains( 'vre-en' ) ) {
+	if ( ! window.vrAnglais || ! document.body.classList.contains( 'vr-en' ) ) {
 		return;
 	}
 
-	var dico = vreData.dico || {};
+	var dico = vrAnglais.dico || {};
 
 	var MOIS = {
 		'janvier': 'January', 'février': 'February', 'mars': 'March', 'avril': 'April', 'mai': 'May', 'juin': 'June',

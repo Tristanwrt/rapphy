@@ -38,7 +38,8 @@ $vr_p_cocooning = $vr_prix( $vr_basse, 'cocooning' );
 $vr_semaine     = $vr_p_haute ? $vr_p_haute * 7 : null;
 ?>
 
-<section class="vr-section vr-wrap" id="formules">
+<section class="vr-section" id="formules">
+<div class="vr-wrap">
 
 	<div class="vr-reveal vr-center" style="margin-bottom:48px">
 		<p class="vr-eyebrow">Deux façons de séjourner</p>
@@ -100,4 +101,5 @@ $vr_semaine     = $vr_p_haute ? $vr_p_haute * 7 : null;
 		</div>
 
 	</div>
+</div>
 </section>

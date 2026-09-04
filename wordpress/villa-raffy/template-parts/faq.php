@@ -16,7 +16,8 @@ if ( ! $vr_questions ) {
 }
 ?>
 
-<section class="vr-section vr-wrap" id="faq">
+<section class="vr-section" id="faq">
+<div class="vr-wrap">
 	<div class="vr-faq">
 
 		<div class="vr-reveal vr-center" style="margin-bottom:40px">
@@ -45,4 +46,5 @@ if ( ! $vr_questions ) {
 		</div>
 
 	</div>
+</div>
 </section>

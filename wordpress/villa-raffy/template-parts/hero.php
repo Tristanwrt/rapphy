@@ -18,27 +18,51 @@ $vr_preuves  = array(
 );
 ?>
 
-<section class="vr-hero" id="accueil">
+<?php
+// Point fort de la photo : quelle partie garder quand le cadre est plus large que l'image.
+$vr_positions = array( 'haut' => '50% 18%', 'centre' => '50% 50%', 'bas' => '50% 82%' );
+$vr_position  = get_theme_mod( 'vr_hero_position', 'centre' );
+$vr_position  = isset( $vr_positions[ $vr_position ] ) ? $vr_positions[ $vr_position ] : $vr_positions['centre'];
 
-	<?php
-	// Point fort de la photo : quelle partie garder quand l'écran est plus large que l'image.
-	$vr_positions = array( 'haut' => '50% 18%', 'centre' => '50% 50%', 'bas' => '50% 82%' );
-	$vr_position  = get_theme_mod( 'vr_hero_position', 'centre' );
-	$vr_position  = isset( $vr_positions[ $vr_position ] ) ? $vr_positions[ $vr_position ] : $vr_positions['centre'];
-	?>
-	<div class="vr-hero__bg" id="vr-hero-bg" style="--vr-hero-pos:<?php echo esc_attr( $vr_position ); ?>">
-		<?php
-		if ( $vr_image_id && wp_get_attachment_image_url( $vr_image_id, 'vr-hero' ) ) {
-			// La grande image se charge en priorité : c'est la première chose que l'on voit.
-			echo wp_get_attachment_image( $vr_image_id, 'vr-hero', false, array( 'loading' => 'eager', 'fetchpriority' => 'high', 'decoding' => 'async' ) );
-		} else {
-			vr_image( 0, 'vr-hero', 'La villa', '' );
-		}
-		?>
-	</div>
-	<div class="vr-hero__veil"></div>
+// Disposition : photo plein écran derrière le texte, ou photo encadrée à droite du texte.
+$vr_droite = ( 'droite' === get_theme_mod( 'vr_hero_disposition', 'plein' ) );
+
+// La grande image se charge en priorité : c'est la première chose que l'on voit.
+$vr_photo = '';
+if ( $vr_image_id && wp_get_attachment_image_url( $vr_image_id, 'vr-hero' ) ) {
+	$vr_photo = wp_get_attachment_image( $vr_image_id, 'vr-hero', false, array( 'loading' => 'eager', 'fetchpriority' => 'high', 'decoding' => 'async' ) );
+}
+?>
+
+<section class="vr-hero<?php echo $vr_droite ? ' vr-hero--droite' : ''; ?>" id="accueil">
+
+	<?php if ( ! $vr_droite ) : ?>
+		<div class="vr-hero__bg" id="vr-hero-bg" style="--vr-hero-pos:<?php echo esc_attr( $vr_position ); ?>">
+			<?php
+			if ( $vr_photo ) {
+				echo $vr_photo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			} else {
+				vr_image( 0, 'vr-hero', 'La villa', '' );
+			}
+			?>
+		</div>
+		<div class="vr-hero__veil"></div>
+	<?php endif; ?>
 
 	<div class="vr-wrap vr-hero__inner">
+
+	<?php if ( $vr_droite ) : ?>
+		<div class="vr-hero__photo" style="--vr-hero-pos:<?php echo esc_attr( $vr_position ); ?>">
+			<?php
+			if ( $vr_photo ) {
+				echo $vr_photo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			} else {
+				vr_image( 0, 'vr-hero', 'La villa', '' );
+			}
+			?>
+		</div>
+		<div class="vr-hero__texte">
+	<?php endif; ?>
 
 		<?php if ( get_theme_mod( 'vr_hero_surtitre', '' ) ) : ?>
 			<p class="vr-eyebrow"><?php echo esc_html( get_theme_mod( 'vr_hero_surtitre', '' ) ); ?></p>
@@ -94,6 +118,10 @@ $vr_preuves  = array(
 				</span>
 			<?php endforeach; ?>
 		</div>
+
+	<?php if ( $vr_droite ) : ?>
+		</div>
+	<?php endif; ?>
 
 	</div>
 </section>

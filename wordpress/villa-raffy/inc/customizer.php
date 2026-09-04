@@ -33,6 +33,13 @@ function vr_mod_defauts() {
 
 		// Grande image.
 		'vr_hero_position'    => 'centre',
+		'vr_hero_disposition' => 'plein',
+		'vr_visite_affichage' => 'encadre',
+		'vr_couleur_fond'     => '#f6f2ea',
+		'vr_couleur_fond_2'   => '#efe9dd',
+		'vr_couleur_encre'    => '#211a13',
+		'vr_couleur_laiton'   => '#b08d57',
+		'vr_couleur_nuit'     => '#16241f',
 		'vr_hero_surtitre'    => 'Saint-Robert · Entre Agen et Villeneuve-sur-Lot',
 		'vr_hero_titre'       => 'Votre oasis d\'exception au cœur du Lot-et-Garonne',
 		'vr_hero_sous_titre'  => 'Villa de 180 m² pour 8 voyageurs — piscine, jacuzzi, plage privée de sable fin, salle de sport et cinéma privé, sur 2300 m² de nature clôturée.',
@@ -149,6 +156,32 @@ function vr_customizer( $wp_customize ) {
 	$champ( 'vr_url_airbnb', 'Lien vers votre annonce Airbnb', 'vr_contact', 'url', 'Le logo Airbnb (section Avis et pied de page) renvoie vers cette page.' );
 	$champ( 'vr_url_google', 'Lien vers vos avis Google', 'vr_contact', 'url', 'Le logo Google (section Avis et pied de page) renvoie vers cette page.' );
 
+	/* ═══ COULEURS ═══ */
+	$wp_customize->add_section( 'vr_couleurs', array(
+		'title'       => 'Couleurs du site',
+		'priority'    => 19,
+		'description' => 'Les cinq couleurs qui composent tout le site. Changez-en une : toutes les sections suivent. Chaque section de la page Accueil peut aussi avoir sa propre couleur (onglet Couleur du bloc).',
+	) );
+	$couleurs = array(
+		'vr_couleur_fond'   => array( 'Fond du site (lin ivoire)', 'Le fond clair de la plupart des sections.' ),
+		'vr_couleur_fond_2' => array( 'Fond alterné (lin foncé)', 'Les sections « Réserver en direct », « Chambres », « Avis », « La région ».' ),
+		'vr_couleur_encre'  => array( 'Texte (encre)', 'Les titres et les textes sur fond clair.' ),
+		'vr_couleur_laiton' => array( 'Accent doré (laiton)', 'Les boutons, les petites lignes au-dessus des titres, les étoiles.' ),
+		'vr_couleur_nuit'   => array( 'Fond sombre (nuit)', 'La visite guidée, la vidéo, la mosaïque des extérieurs, le pied de page.' ),
+	);
+	foreach ( $couleurs as $id => $infos ) {
+		$wp_customize->add_setting( $id, array(
+			'default'           => $defauts[ $id ],
+			'sanitize_callback' => 'sanitize_hex_color',
+			'transport'         => 'refresh',
+		) );
+		$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, $id, array(
+			'label'       => $infos[0],
+			'description' => $infos[1],
+			'section'     => 'vr_couleurs',
+		) ) );
+	}
+
 	/* ═══ EN-TÊTE (HÉRO) ═══ */
 	$wp_customize->add_section( 'vr_hero', array(
 		'title'       => 'Grande image d\'accueil',
@@ -163,6 +196,20 @@ function vr_customizer( $wp_customize ) {
 		'section'     => 'vr_hero',
 		'mime_type'   => 'image',
 	) ) );
+
+	$wp_customize->add_setting( 'vr_hero_disposition', array(
+		'default'           => 'plein',
+		'sanitize_callback' => function ( $v ) {
+			return in_array( $v, array( 'plein', 'droite' ), true ) ? $v : 'plein';
+		},
+	) );
+	$wp_customize->add_control( 'vr_hero_disposition', array(
+		'label'       => 'Disposition',
+		'description' => '« Photo à droite » : le titre et la barre de recherche à gauche, la photo encadrée à droite.',
+		'section'     => 'vr_hero',
+		'type'        => 'select',
+		'choices'     => array( 'plein' => 'Photo plein écran', 'droite' => 'Photo à droite du texte' ),
+	) );
 
 	$wp_customize->add_setting( 'vr_hero_position', array(
 		'default'           => 'centre',
@@ -220,6 +267,19 @@ function vr_customizer( $wp_customize ) {
 	) );
 
 	$champ( 'vr_visite_titre', 'Section « Visite guidée » — titre', 'vr_sections', 'textarea' );
+	$wp_customize->add_setting( 'vr_visite_affichage', array(
+		'default'           => 'encadre',
+		'sanitize_callback' => function ( $v ) {
+			return in_array( $v, array( 'encadre', 'plein' ), true ) ? $v : 'encadre';
+		},
+	) );
+	$wp_customize->add_control( 'vr_visite_affichage', array(
+		'label'       => 'Section « Visite guidée » — affichage des photos',
+		'description' => '« Encadrée » garde les photos nettes, même sur grand écran. « Plein écran » demande des photos d\'au moins 2500 px.',
+		'section'     => 'vr_sections',
+		'type'        => 'select',
+		'choices'     => array( 'encadre' => 'Photo encadrée, texte à côté', 'plein' => 'Photo plein écran' ),
+	) );
 	$champ( 'vr_villa_titre', 'Section « La villa » — titre', 'vr_sections', 'textarea' );
 	$champ( 'vr_villa_texte_1', 'Section « La villa » — premier paragraphe', 'vr_sections', 'textarea' );
 	$champ( 'vr_villa_texte_2', 'Section « La villa » — second paragraphe', 'vr_sections', 'textarea' );

@@ -1,24 +1,28 @@
 <?php
 /**
- * Plugin Name: Villa Raffy — Version anglaise
- * Description: Ajoute une version anglaise du site à l'adresse /en/, sans dupliquer les contenus : les textes français sont traduits à l'affichage grâce à un dictionnaire modifiable dans Réglages → Version anglaise.
- * Version: 1.0.0
- * Author: Tristan Wiart
- * Requires at least: 6.0
- * Requires PHP: 7.4
- * Text Domain: villa-raffy-english
+ * Version anglaise du site, intégrée au thème.
  *
- * @package VillaRaffyEnglish
+ * L'adresse /en/… affiche la même page que la version française, traduite à
+ * l'affichage grâce à un dictionnaire (inc/dictionnaire-anglais.php) que le
+ * propriétaire complète dans Réglages → Version anglaise. Le calendrier et
+ * les messages WhatsApp / email sont traduits par assets/js/anglais.js.
+ *
+ * @package VillaRaffy
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VRE_VERSION', '1.0.0' );
-define( 'VRE_DIR', plugin_dir_path( __FILE__ ) );
-define( 'VRE_URL', plugin_dir_url( __FILE__ ) );
-define( 'VRE_PREFIXE', '/en' );
+// Si l'ancienne extension « Version anglaise » est encore active, elle fait le travail : on la laisse, et on prévient.
+if ( defined( 'VRE_VERSION' ) ) {
+	add_action( 'admin_notices', function () {
+		echo '<div class="notice notice-warning"><p><strong>Villa Raffy :</strong> la version anglaise est maintenant intégrée au thème. Vous pouvez désactiver et supprimer l\'extension « Villa Raffy — Version anglaise » (Extensions), rien ne sera perdu : le dictionnaire est conservé.</p></div>';
+	} );
+	return;
+}
+
+define( 'VR_EN_PREFIXE', '/en' );
 
 /* ═══════════════════════════════════════════════════════════
    1. DÉTECTION DE LA LANGUE
@@ -27,7 +31,7 @@ define( 'VRE_PREFIXE', '/en' );
    que l'on traduit ensuite à la volée (étape 3).
    ═══════════════════════════════════════════════════════════ */
 
-function vre_detecter_langue() {
+function vr_en_detecter() {
 	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
 		return;
 	}
@@ -35,36 +39,41 @@ function vre_detecter_langue() {
 	$uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
 
 	// Le site peut être installé dans un sous-dossier : on l'ignore.
-	$racine = rtrim( (string) wp_parse_url( home_url( '/' ), PHP_URL_PATH ), '/' );
+	$racine = rtrim( (string) wp_parse_url( get_option( 'home' ), PHP_URL_PATH ), '/' );
 	$chemin = $racine && 0 === strpos( $uri, $racine ) ? substr( $uri, strlen( $racine ) ) : $uri;
 
-	if ( ! preg_match( '#^' . preg_quote( VRE_PREFIXE, '#' ) . '(?=/|\?|$)#', $chemin ) ) {
+	if ( ! preg_match( '#^' . preg_quote( VR_EN_PREFIXE, '#' ) . '(?=/|\?|$)#', $chemin ) ) {
 		return;
 	}
 
-	$GLOBALS['vre_langue'] = 'en';
+	$GLOBALS['vr_en_langue'] = 'en';
 
-	$reste = substr( $chemin, strlen( VRE_PREFIXE ) );
+	$reste = substr( $chemin, strlen( VR_EN_PREFIXE ) );
 	if ( '' === $reste || '?' === $reste[0] ) {
 		$reste = '/' . $reste;
 	}
 	$_SERVER['REQUEST_URI'] = $racine . $reste;
+
+	// Dates et mois en anglais (WordPress n'a pas besoin de fichier de langue pour l'anglais).
+	if ( function_exists( 'switch_to_locale' ) ) {
+		switch_to_locale( 'en_US' );
+	}
 }
-add_action( 'plugins_loaded', 'vre_detecter_langue', 1 );
+add_action( 'after_setup_theme', 'vr_en_detecter', 1 );
 
 /**
  * Vrai quand la page demandée est la version anglaise.
  */
-function vre_est_anglais() {
-	return ! empty( $GLOBALS['vre_langue'] ) && 'en' === $GLOBALS['vre_langue'];
+function vr_en_actif() {
+	return ! empty( $GLOBALS['vr_en_langue'] ) && 'en' === $GLOBALS['vr_en_langue'];
 }
 
 /**
  * Chemin de la page courante sans le préfixe /en (ex. « /journal/ »).
  */
-function vre_chemin_courant() {
+function vr_en_chemin_courant() {
 	$uri    = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '/';
-	$racine = rtrim( (string) wp_parse_url( home_url( '/' ), PHP_URL_PATH ), '/' );
+	$racine = rtrim( (string) wp_parse_url( get_option( 'home' ), PHP_URL_PATH ), '/' );
 	if ( $racine && 0 === strpos( $uri, $racine ) ) {
 		$uri = substr( $uri, strlen( $racine ) );
 	}
@@ -79,8 +88,8 @@ function vre_chemin_courant() {
  * Les liens internes gardent le préfixe /en (menu, boutons, articles),
  * sauf les adresses techniques (API, administration, fichiers).
  */
-function vre_filtrer_home_url( $url, $path ) {
-	if ( ! vre_est_anglais() ) {
+function vr_en_filtrer_home_url( $url, $path ) {
+	if ( ! vr_en_actif() ) {
 		return $url;
 	}
 	$techniques = array( '/wp-json', '/wp-admin', '/wp-content', '/wp-includes', '/wp-login', '/xmlrpc', '/feed', '?rest_route' );
@@ -97,27 +106,28 @@ function vre_filtrer_home_url( $url, $path ) {
 	if ( '' === $suite ) {
 		$suite = '/';
 	}
-	if ( VRE_PREFIXE === $suite || 0 === strpos( $suite, VRE_PREFIXE . '/' ) || 0 === strpos( $suite, VRE_PREFIXE . '?' ) ) {
+	if ( VR_EN_PREFIXE === $suite || 0 === strpos( $suite, VR_EN_PREFIXE . '/' ) || 0 === strpos( $suite, VR_EN_PREFIXE . '?' ) ) {
 		return $url;
 	}
-	return $base . VRE_PREFIXE . $suite;
+	return $base . VR_EN_PREFIXE . $suite;
 }
-add_filter( 'home_url', 'vre_filtrer_home_url', 10, 2 );
+add_filter( 'home_url', 'vr_en_filtrer_home_url', 10, 2 );
 
 /**
- * La langue déclarée de la page, et le format des dates de WordPress.
+ * Pas de redirection « adresse canonique » sur la version anglaise : WordPress
+ * voudrait renvoyer /en/journal/ vers /journal/, puis l'inverse, sans fin.
  */
-add_filter( 'language_attributes', function ( $attr ) {
-	return vre_est_anglais() ? 'lang="en"' : $attr;
+add_filter( 'redirect_canonical', function ( $url ) {
+	return vr_en_actif() ? false : $url;
 } );
 
-add_filter( 'locale', function ( $locale ) {
-	return vre_est_anglais() ? 'en_US' : $locale;
+add_filter( 'language_attributes', function ( $attr ) {
+	return vr_en_actif() ? 'lang="en"' : $attr;
 } );
 
 add_filter( 'body_class', function ( $classes ) {
-	if ( vre_est_anglais() ) {
-		$classes[] = 'vre-en';
+	if ( vr_en_actif() ) {
+		$classes[] = 'vr-en';
 	}
 	return $classes;
 } );
@@ -125,38 +135,40 @@ add_filter( 'body_class', function ( $classes ) {
 /**
  * Balises hreflang : Google sait que /en/ est la version anglaise de la page.
  */
-function vre_hreflang() {
-	$chemin = vre_chemin_courant();
+function vr_en_hreflang() {
+	$chemin = vr_en_chemin_courant();
 	$base   = untrailingslashit( get_option( 'home' ) );
 	$fr     = $base . $chemin;
-	$en     = $base . VRE_PREFIXE . $chemin;
+	$en     = $base . VR_EN_PREFIXE . $chemin;
 	printf( '<link rel="alternate" hreflang="fr" href="%s" />' . "\n", esc_url( $fr ) );
 	printf( '<link rel="alternate" hreflang="en" href="%s" />' . "\n", esc_url( $en ) );
 	printf( '<link rel="alternate" hreflang="x-default" href="%s" />' . "\n", esc_url( $fr ) );
 }
-add_action( 'wp_head', 'vre_hreflang', 2 );
+add_action( 'wp_head', 'vr_en_hreflang', 2 );
 
 /**
  * Script qui traduit ce que le navigateur génère lui-même
- * (calendrier, messages, texte WhatsApp), et bouton FR / EN.
+ * (calendrier, messages, texte WhatsApp).
  */
-function vre_assets() {
-	wp_enqueue_style( 'vre-style', VRE_URL . 'assets/english.css', array(), VRE_VERSION );
-	if ( vre_est_anglais() ) {
-		wp_enqueue_script( 'vre-script', VRE_URL . 'assets/english.js', array( 'vr-script' ), VRE_VERSION, true );
-		wp_localize_script( 'vre-script', 'vreData', array( 'dico' => vre_dictionnaire() ) );
+function vr_en_assets() {
+	if ( vr_en_actif() ) {
+		wp_enqueue_script( 'vr-anglais', get_template_directory_uri() . '/assets/js/anglais.js', array( 'vr-script' ), VR_VERSION, true );
+		wp_localize_script( 'vr-anglais', 'vrAnglais', array( 'dico' => vr_en_dictionnaire() ) );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'vre_assets', 20 );
+add_action( 'wp_enqueue_scripts', 'vr_en_assets', 20 );
 
-function vre_bouton_langue() {
-	$chemin = vre_chemin_courant();
-	$base   = untrailingslashit( get_option( 'home' ) );
-	$fr     = $base . $chemin;
-	$en     = $base . VRE_PREFIXE . $chemin;
-	$anglais = vre_est_anglais();
+/**
+ * Le bouton FR / EN, en bas à gauche de chaque page.
+ */
+function vr_en_bouton_langue() {
+	$chemin  = vr_en_chemin_courant();
+	$base    = untrailingslashit( get_option( 'home' ) );
+	$fr      = $base . $chemin;
+	$en      = $base . VR_EN_PREFIXE . $chemin;
+	$anglais = vr_en_actif();
 	printf(
-		'<nav class="vre-switch" aria-label="%s"><a href="%s" hreflang="fr"%s>FR</a><a href="%s" hreflang="en"%s>EN</a></nav>',
+		'<nav class="vr-langue" aria-label="%s"><a href="%s" hreflang="fr"%s>FR</a><a href="%s" hreflang="en"%s>EN</a></nav>',
 		$anglais ? 'Language' : 'Langue',
 		esc_url( $fr ),
 		$anglais ? '' : ' aria-current="true"',
@@ -164,7 +176,7 @@ function vre_bouton_langue() {
 		$anglais ? ' aria-current="true"' : ''
 	);
 }
-add_action( 'wp_footer', 'vre_bouton_langue' );
+add_action( 'wp_footer', 'vr_en_bouton_langue' );
 
 /* ═══════════════════════════════════════════════════════════
    3. TRADUCTION DE LA PAGE À L'AFFICHAGE
@@ -174,7 +186,7 @@ add_action( 'wp_footer', 'vre_bouton_langue' );
  * Normalise un texte pour la recherche dans le dictionnaire :
  * espaces multiples, espaces insécables, apostrophes typographiques.
  */
-function vre_cle( $texte ) {
+function vr_en_cle( $texte ) {
 	$texte = html_entity_decode( $texte, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 	$texte = str_replace( array( "\xc2\xa0", "\xe2\x80\xaf", "\xe2\x80\x99" ), array( ' ', ' ', "'" ), $texte );
 	$texte = preg_replace( '/\s+/u', ' ', $texte );
@@ -182,20 +194,31 @@ function vre_cle( $texte ) {
 }
 
 /**
+ * Le dictionnaire enregistré par le propriétaire (celui de l'ancienne extension est repris tel quel).
+ */
+function vr_en_option_dictionnaire() {
+	$texte = (string) get_option( 'vr_en_dictionnaire', '' );
+	if ( '' === trim( $texte ) ) {
+		$texte = (string) get_option( 'vre_dictionnaire', '' );
+	}
+	return $texte;
+}
+
+/**
  * Le dictionnaire complet : celui livré avec l'extension,
  * complété ou corrigé par celui enregistré dans les réglages.
  */
-function vre_dictionnaire() {
+function vr_en_dictionnaire() {
 	static $dico = null;
 	if ( null !== $dico ) {
 		return $dico;
 	}
 	$dico = array();
-	foreach ( (array) include VRE_DIR . 'dictionnaire.php' as $fr => $en ) {
-		$dico[ vre_cle( $fr ) ] = $en;
+	foreach ( (array) include get_template_directory() . '/inc/dictionnaire-anglais.php' as $fr => $en ) {
+		$dico[ vr_en_cle( $fr ) ] = $en;
 	}
-	foreach ( vre_analyser_texte( (string) get_option( 'vre_dictionnaire', '' ) ) as $fr => $en ) {
-		$dico[ vre_cle( $fr ) ] = $en;
+	foreach ( vr_en_analyser_texte( (string) vr_en_option_dictionnaire() ) as $fr => $en ) {
+		$dico[ vr_en_cle( $fr ) ] = $en;
 	}
 	return $dico;
 }
@@ -204,7 +227,7 @@ function vre_dictionnaire() {
  * Lit le format des réglages : une ligne en français, la ligne suivante
  * en anglais, une ligne vide entre chaque paire.
  */
-function vre_analyser_texte( $texte ) {
+function vr_en_analyser_texte( $texte ) {
 	$paires = array();
 	$blocs  = preg_split( '/\n\s*\n/', str_replace( "\r", '', $texte ) );
 	foreach ( $blocs as $bloc ) {
@@ -220,16 +243,16 @@ function vre_analyser_texte( $texte ) {
  * Traduit un texte (ou le renvoie inchangé). Les textes sans lettres
  * (prix, numéros, symboles) ne sont jamais traduits.
  */
-function vre_traduire( $texte, &$manquants = null ) {
-	$cle = vre_cle( $texte );
+function vr_en_traduire( $texte, &$manquants = null ) {
+	$cle = vr_en_cle( $texte );
 	if ( '' === $cle || ! preg_match( '/\p{L}{2}/u', $cle ) ) {
 		return $texte;
 	}
-	$dico = vre_dictionnaire();
+	$dico = vr_en_dictionnaire();
 	if ( isset( $dico[ $cle ] ) ) {
 		return $dico[ $cle ];
 	}
-	if ( is_array( $manquants ) && count( $manquants ) < 300 && vre_vaut_signalement( $cle ) ) {
+	if ( is_array( $manquants ) && count( $manquants ) < 300 && vr_en_vaut_signalement( $cle ) ) {
 		$manquants[ $cle ] = true;
 	}
 	return null;
@@ -239,7 +262,7 @@ function vre_traduire( $texte, &$manquants = null ) {
  * Faut-il signaler ce texte comme « sans traduction » au propriétaire ?
  * On ignore les adresses web, emails, noms propres isolés et adresses postales.
  */
-function vre_vaut_signalement( $cle ) {
+function vr_en_vaut_signalement( $cle ) {
 	if ( preg_match( '#^(https?://|www\.|[\w.+-]+@)#i', $cle ) ) {
 		return false;
 	}
@@ -257,7 +280,7 @@ function vre_vaut_signalement( $cle ) {
  * et les attributs visibles (alt, title, placeholder, aria-label, meta).
  * Les scripts et les styles sont laissés intacts.
  */
-function vre_traduire_html( $html ) {
+function vr_en_traduire_html( $html ) {
 	$manquants = array();
 	$morceaux  = preg_split( '#(<script\b[^>]*>.*?</script>|<style\b[^>]*>.*?</style>)#si', $html, -1, PREG_SPLIT_DELIM_CAPTURE );
 
@@ -269,7 +292,7 @@ function vre_traduire_html( $html ) {
 		$morceau = preg_replace_callback(
 			'/>([^<]+)</u',
 			function ( $m ) use ( &$manquants ) {
-				$en = vre_traduire( $m[1], $manquants );
+				$en = vr_en_traduire( $m[1], $manquants );
 				if ( null === $en || $en === $m[1] ) {
 					return $m[0];
 				}
@@ -291,7 +314,7 @@ function vre_traduire_html( $html ) {
 				$attributs = preg_replace_callback(
 					'/\s(alt|title|placeholder|aria-label)="([^"]*)"/u',
 					function ( $a ) use ( &$manquants ) {
-						$en = vre_traduire( $a[2], $manquants );
+						$en = vr_en_traduire( $a[2], $manquants );
 						if ( null === $en || $en === $a[2] ) {
 							return $a[0];
 						}
@@ -311,7 +334,7 @@ function vre_traduire_html( $html ) {
 				return preg_replace_callback(
 					'/\scontent="([^"]*)"/u',
 					function ( $a ) use ( &$manquants ) {
-						$en = vre_traduire( $a[1], $manquants );
+						$en = vr_en_traduire( $a[1], $manquants );
 						if ( null === $en || $en === $a[1] ) {
 							return $a[0];
 						}
@@ -327,7 +350,7 @@ function vre_traduire_html( $html ) {
 	}
 
 	if ( $manquants ) {
-		vre_memoriser_manquants( array_keys( $manquants ) );
+		vr_en_memoriser_manquants( array_keys( $manquants ) );
 	}
 
 	return implode( '', $morceaux );
@@ -337,69 +360,69 @@ function vre_traduire_html( $html ) {
  * Garde en mémoire les textes français rencontrés sans traduction,
  * pour les proposer dans Réglages → Version anglaise.
  */
-function vre_memoriser_manquants( $nouveaux ) {
-	$connus  = (array) get_option( 'vre_manquants', array() );
+function vr_en_memoriser_manquants( $nouveaux ) {
+	$connus  = (array) get_option( 'vr_en_manquants', array() );
 	$fusion  = array_values( array_unique( array_merge( $connus, $nouveaux ) ) );
 	$fusion  = array_slice( $fusion, -300 );
 	if ( $fusion !== $connus ) {
-		update_option( 'vre_manquants', $fusion, false );
+		update_option( 'vr_en_manquants', $fusion, false );
 	}
 }
 
-function vre_demarrer_traduction() {
-	if ( vre_est_anglais() && ! is_feed() && ! is_robots() ) {
-		ob_start( 'vre_traduire_html' );
+function vr_en_demarrer_traduction() {
+	if ( vr_en_actif() && ! is_feed() && ! is_robots() ) {
+		ob_start( 'vr_en_traduire_html' );
 	}
 }
-add_action( 'template_redirect', 'vre_demarrer_traduction', 0 );
+add_action( 'template_redirect', 'vr_en_demarrer_traduction', 0 );
 
 /* ═══════════════════════════════════════════════════════════
    4. ÉCRAN DE RÉGLAGES
    ═══════════════════════════════════════════════════════════ */
 
-function vre_menu() {
-	add_options_page( 'Version anglaise', 'Version anglaise', 'edit_theme_options', 'villa-raffy-english', 'vre_page_reglages' );
+function vr_en_menu() {
+	add_options_page( 'Version anglaise', 'Version anglaise', 'edit_theme_options', 'villa-raffy-anglais', 'vr_en_page_reglages' );
 }
-add_action( 'admin_menu', 'vre_menu' );
+add_action( 'admin_menu', 'vr_en_menu' );
 
-function vre_enregistrer() {
-	if ( ! isset( $_POST['vre_action'] ) || ! current_user_can( 'edit_theme_options' ) ) {
+function vr_en_enregistrer() {
+	if ( ! isset( $_POST['vr_en_action'] ) || ! current_user_can( 'edit_theme_options' ) ) {
 		return;
 	}
-	check_admin_referer( 'vre_reglages' );
+	check_admin_referer( 'vr_en_reglages' );
 
-	if ( 'reinitialiser' === $_POST['vre_action'] ) {
-		delete_option( 'vre_dictionnaire' );
-		delete_option( 'vre_manquants' );
+	if ( 'reinitialiser' === $_POST['vr_en_action'] ) {
+		delete_option( 'vr_en_dictionnaire' );
+		delete_option( 'vr_en_manquants' );
 	} else {
-		$texte = isset( $_POST['vre_dictionnaire'] ) ? wp_unslash( $_POST['vre_dictionnaire'] ) : '';
-		update_option( 'vre_dictionnaire', sanitize_textarea_field( $texte ), false );
-		delete_option( 'vre_manquants' );
+		$texte = isset( $_POST['vr_en_dictionnaire'] ) ? wp_unslash( $_POST['vr_en_dictionnaire'] ) : '';
+		update_option( 'vr_en_dictionnaire', sanitize_textarea_field( $texte ), false );
+		delete_option( 'vr_en_manquants' );
 	}
 
-	wp_safe_redirect( add_query_arg( array( 'page' => 'villa-raffy-english', 'enregistre' => 1 ), admin_url( 'options-general.php' ) ) );
+	wp_safe_redirect( add_query_arg( array( 'page' => 'villa-raffy-anglais', 'enregistre' => 1 ), admin_url( 'options-general.php' ) ) );
 	exit;
 }
-add_action( 'admin_init', 'vre_enregistrer' );
+add_action( 'admin_init', 'vr_en_enregistrer' );
 
 /**
  * Le dictionnaire au format texte, prêt à être modifié.
  */
-function vre_texte_dictionnaire() {
-	$perso = (string) get_option( 'vre_dictionnaire', '' );
+function vr_en_texte_dictionnaire() {
+	$perso = (string) vr_en_option_dictionnaire();
 	if ( '' !== trim( $perso ) ) {
 		return $perso;
 	}
 	$lignes = array();
-	foreach ( (array) include VRE_DIR . 'dictionnaire.php' as $fr => $en ) {
+	foreach ( (array) include get_template_directory() . '/inc/dictionnaire-anglais.php' as $fr => $en ) {
 		$lignes[] = $fr . "\n" . $en;
 	}
 	return implode( "\n\n", $lignes );
 }
 
-function vre_page_reglages() {
-	$manquants = (array) get_option( 'vre_manquants', array() );
-	$en_url    = untrailingslashit( get_option( 'home' ) ) . VRE_PREFIXE . '/';
+function vr_en_page_reglages() {
+	$manquants = (array) get_option( 'vr_en_manquants', array() );
+	$en_url    = untrailingslashit( get_option( 'home' ) ) . VR_EN_PREFIXE . '/';
 	?>
 	<div class="wrap">
 		<h1>Version anglaise</h1>
@@ -427,12 +450,12 @@ function vre_page_reglages() {
 		<?php endif; ?>
 
 		<form method="post">
-			<?php wp_nonce_field( 'vre_reglages' ); ?>
-			<input type="hidden" name="vre_action" value="enregistrer" />
-			<textarea name="vre_dictionnaire" id="vre-dictionnaire" rows="30" style="width:100%;max-width:900px;font-family:monospace;font-size:13px;line-height:1.5"><?php echo esc_textarea( vre_texte_dictionnaire() ); ?></textarea>
+			<?php wp_nonce_field( 'vr_en_reglages' ); ?>
+			<input type="hidden" name="vr_en_action" value="enregistrer" />
+			<textarea name="vr_en_dictionnaire" id="vre-dictionnaire" rows="30" style="width:100%;max-width:900px;font-family:monospace;font-size:13px;line-height:1.5"><?php echo esc_textarea( vr_en_texte_dictionnaire() ); ?></textarea>
 			<p>
 				<button type="submit" class="button button-primary">Enregistrer le dictionnaire</button>
-				<button type="submit" class="button" onclick="this.form.vre_action.value='reinitialiser';return confirm('Remettre le dictionnaire d\'origine ? Vos modifications seront perdues.');">Remettre le dictionnaire d'origine</button>
+				<button type="submit" class="button" onclick="this.form.vr_en_action.value='reinitialiser';return confirm('Remettre le dictionnaire d\'origine ? Vos modifications seront perdues.');">Remettre le dictionnaire d'origine</button>
 			</p>
 		</form>
 	</div>
@@ -454,10 +477,3 @@ function vre_page_reglages() {
 	<?php
 }
 
-/* ═══════════════════════════════════════════════════════════
-   5. ACTIVATION
-   ═══════════════════════════════════════════════════════════ */
-
-register_activation_hook( __FILE__, function () {
-	delete_option( 'vre_manquants' );
-} );

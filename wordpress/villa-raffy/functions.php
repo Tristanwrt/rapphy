@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VR_VERSION', '1.2.1' );
+define( 'VR_VERSION', '1.3.0' );
 
 /* ═══════════════════════════════════════════════════════════
    1. RÉGLAGES DU THÈME
@@ -85,6 +85,9 @@ require_once get_template_directory() . '/inc/metaboxes.php';
 require_once get_template_directory() . '/inc/redirections.php';
 require_once get_template_directory() . '/inc/seo.php';
 require_once get_template_directory() . '/inc/blocs.php';
+require_once get_template_directory() . '/inc/couleurs.php';
+require_once get_template_directory() . '/inc/images.php';
+require_once get_template_directory() . '/inc/anglais.php';
 
 /**
  * Qualité des photos : WordPress compresse à 82/100 par défaut et rétrécit

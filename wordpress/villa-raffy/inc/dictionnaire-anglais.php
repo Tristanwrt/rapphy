@@ -1,12 +1,12 @@
 <?php
 /**
- * Dictionnaire français → anglais livré avec l'extension.
+ * Dictionnaire français → anglais livré avec le thème.
  *
  * Une ligne par texte du site, tel qu'il s'affiche en français.
  * Le propriétaire peut compléter ou corriger ces traductions dans
  * Réglages → Version anglaise, sans toucher à ce fichier.
  *
- * @package VillaRaffyEnglish
+ * @package VillaRaffy
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

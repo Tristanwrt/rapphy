@@ -37,7 +37,8 @@ $vr_colonnes = array(
 $vr_compteur = 0;
 ?>
 
-<section class="vr-wrap vr-chiffres" id="chiffres">
+<section class="vr-chiffres" id="chiffres">
+<div class="vr-wrap">
 	<div class="vr-stats">
 		<?php foreach ( $vr_colonnes as $vr_cote => $vr_liste ) : ?>
 			<?php if ( 'droite' === $vr_cote ) : ?>
@@ -58,4 +59,5 @@ $vr_compteur = 0;
 			</div>
 		<?php endforeach; ?>
 	</div>
+</div>
 </section>

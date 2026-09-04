@@ -13,6 +13,7 @@
 	var Fragment = wp.element.Fragment;
 	var registerBlockType = wp.blocks.registerBlockType;
 	var InspectorControls = wp.blockEditor.InspectorControls;
+	var useBlockProps = wp.blockEditor.useBlockProps;
 	var MediaUpload = wp.blockEditor.MediaUpload;
 	var MediaUploadCheck = wp.blockEditor.MediaUploadCheck;
 	var PanelBody = wp.components.PanelBody;
@@ -95,6 +96,13 @@
 
 			edit: function ( props ) {
 				var controles = [];
+				// Le cadre du bloc dans l'éditeur. Les couleurs et marges choisies sont dessinées
+				// par l'aperçu de la section lui-même (comme sur le site) : on les retire du cadre.
+				var cadre = useBlockProps( { className: 'vr-bloc' + ( props.isSelected ? ' is-selected' : '' ) } );
+				cadre = Object.assign( {}, cadre, {
+					style: undefined,
+					className: ( cadre.className || '' ).split( ' ' ).filter( function ( c ) { return 0 !== c.indexOf( 'has-' ); } ).join( ' ' )
+				} );
 
 				Object.keys( def.champs ).forEach( function ( attr ) {
 					var champ = def.champs[ attr ];
@@ -157,7 +165,7 @@
 							controles.length ? controles : el( 'p', {}, 'Cette section n\'a pas de texte à modifier ici.' )
 						)
 					),
-					el( 'div', { className: 'vr-bloc' + ( props.isSelected ? ' is-selected' : '' ) },
+					el( 'div', cadre,
 						el( 'span', { className: 'vr-bloc__etiquette' }, def.titre ),
 						el( ServerSideRender, { block: 'villa-raffy/' + cle, attributes: props.attributes } )
 					)

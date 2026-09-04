@@ -35,7 +35,8 @@ foreach ( $vr_etapes as $vr_index => $vr_etape ) {
 $vr_total = count( $vr_etapes );
 ?>
 
-<section class="vr-tour" id="visite" aria-label="Visite guidée de la villa" style="height:<?php echo esc_attr( $vr_total * 100 ); ?>vh" data-total="<?php echo esc_attr( $vr_total ); ?>">
+<?php $vr_encadre = ( 'plein' !== get_theme_mod( 'vr_visite_affichage', 'encadre' ) ); ?>
+<section class="vr-tour<?php echo $vr_encadre ? ' vr-tour--encadre' : ''; ?>" id="visite" aria-label="Visite guidée de la villa" style="height:<?php echo esc_attr( $vr_total * 100 ); ?>vh" data-total="<?php echo esc_attr( $vr_total ); ?>">
 	<div class="vr-tour__sticky">
 
 		<div class="vr-tour__head">

@@ -1,0 +1,52 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": false,
+		"color": {
+			"custom": true,
+			"customGradient": true,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"defaultDuotone": false,
+			"palette": [
+				{ "slug": "lin", "color": "#f6f2ea", "name": "Lin ivoire (fond)" },
+				{ "slug": "lin-fonce", "color": "#efe9dd", "name": "Lin foncé (fond alterné)" },
+				{ "slug": "creme", "color": "#fbf9f4", "name": "Crème (cartes)" },
+				{ "slug": "encre", "color": "#211a13", "name": "Encre" },
+				{ "slug": "taupe", "color": "#5d5344", "name": "Taupe (textes secondaires)" },
+				{ "slug": "laiton", "color": "#b08d57", "name": "Laiton (doré)" },
+				{ "slug": "nuit", "color": "#16241f", "name": "Nuit (sections sombres)" },
+				{ "slug": "blanc", "color": "#ffffff", "name": "Blanc" }
+			],
+			"gradients": [
+				{ "slug": "nuit-laiton", "gradient": "linear-gradient(135deg, #16241f 0%, #3b4a3f 60%, #b08d57 140%)", "name": "Nuit vers laiton" },
+				{ "slug": "lin-creme", "gradient": "linear-gradient(180deg, #f6f2ea 0%, #fbf9f4 100%)", "name": "Lin vers crème" }
+			]
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": false,
+			"units": [ "px", "rem", "vh", "%" ],
+			"customSpacingSize": true,
+			"defaultSpacingSizes": false,
+			"spacingSizes": [
+				{ "slug": "aucun", "size": "0px", "name": "Aucun" },
+				{ "slug": "petit", "size": "32px", "name": "Petit" },
+				{ "slug": "moyen", "size": "64px", "name": "Moyen" },
+				{ "slug": "normal", "size": "112px", "name": "Normal (thème)" },
+				{ "slug": "grand", "size": "160px", "name": "Grand" }
+			]
+		},
+		"typography": {
+			"customFontSize": false,
+			"defaultFontSizes": false,
+			"fontSizes": []
+		},
+		"layout": {
+			"contentSize": "1280px",
+			"wideSize": "1280px"
+		}
+	}
+}
