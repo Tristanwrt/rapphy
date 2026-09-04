@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VR_VERSION', '1.3.0' );
+define( 'VR_VERSION', '1.3.1' );
 
 /* ═══════════════════════════════════════════════════════════
    1. RÉGLAGES DU THÈME

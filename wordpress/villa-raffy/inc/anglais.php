@@ -164,9 +164,9 @@ add_action( 'wp_enqueue_scripts', 'vr_en_assets', 20 );
  */
 function vr_en_drapeau( $langue ) {
 	if ( 'fr' === $langue ) {
-		return '<svg viewBox="0 0 30 30" aria-hidden="true" focusable="false"><rect width="10" height="30" fill="#0055A4"/><rect x="10" width="10" height="30" fill="#fff"/><rect x="20" width="10" height="30" fill="#EF4135"/></svg>';
+		return '<svg viewBox="0 0 30 30" width="26" height="26" aria-hidden="true" focusable="false"><rect width="10" height="30" fill="#0055A4"/><rect x="10" width="10" height="30" fill="#fff"/><rect x="20" width="10" height="30" fill="#EF4135"/></svg>';
 	}
-	return '<svg viewBox="15 0 30 30" aria-hidden="true" focusable="false"><clipPath id="vr-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#vr-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg>';
+	return '<svg viewBox="15 0 30 30" width="26" height="26" aria-hidden="true" focusable="false"><clipPath id="vr-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#vr-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg>';
 }
 
 function vr_en_bouton_langue() {
