@@ -28,6 +28,7 @@ function vr_blocs_definitions() {
 			'part'        => 'hero',
 			'champs'      => array(
 				'image'     => array( 'type' => 'image', 'label' => 'Photo plein écran', 'mod' => 'vr_hero_image' ),
+				'position'  => array( 'type' => 'select', 'label' => 'Point fort de la photo', 'mod' => 'vr_hero_position', 'aide' => 'La partie à garder quand l\'écran est plus large que la photo. « Bas » si la piscine est en bas.', 'options' => array( 'haut' => 'Le haut de la photo', 'centre' => 'Le centre', 'bas' => 'Le bas de la photo' ) ),
 				'surtitre'  => array( 'type' => 'text', 'label' => 'Petite ligne au-dessus du titre', 'mod' => 'vr_hero_surtitre' ),
 				'titre'     => array( 'type' => 'textarea', 'label' => 'Grand titre', 'mod' => 'vr_hero_titre' ),
 				'sousTitre' => array( 'type' => 'textarea', 'label' => 'Phrase de présentation', 'mod' => 'vr_hero_sous_titre' ),
@@ -234,10 +235,11 @@ function vr_enregistrer_blocs() {
 			}
 
 			$champs[ $attr ] = array(
-				'type'   => $champ['type'],
-				'label'  => $champ['label'],
-				'aide'   => isset( $champ['aide'] ) ? $champ['aide'] : '',
-				'defaut' => $defaut,
+				'type'    => $champ['type'],
+				'label'   => $champ['label'],
+				'aide'    => isset( $champ['aide'] ) ? $champ['aide'] : '',
+				'options' => isset( $champ['options'] ) ? $champ['options'] : null,
+				'defaut'  => $defaut,
 			);
 		}
 

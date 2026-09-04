@@ -32,6 +32,7 @@ function vr_mod_defauts() {
 		'vr_bandeau_texte'    => 'Saint-Robert, Lot-et-Garonne · Réservation en direct, sans commission',
 
 		// Grande image.
+		'vr_hero_position'    => 'centre',
 		'vr_hero_surtitre'    => 'Saint-Robert · Entre Agen et Villeneuve-sur-Lot',
 		'vr_hero_titre'       => 'Votre oasis d\'exception au cœur du Lot-et-Garonne',
 		'vr_hero_sous_titre'  => 'Villa de 180 m² pour 8 voyageurs — piscine, jacuzzi, plage privée de sable fin, salle de sport et cinéma privé, sur 2300 m² de nature clôturée.',
@@ -162,6 +163,20 @@ function vr_customizer( $wp_customize ) {
 		'section'     => 'vr_hero',
 		'mime_type'   => 'image',
 	) ) );
+
+	$wp_customize->add_setting( 'vr_hero_position', array(
+		'default'           => 'centre',
+		'sanitize_callback' => function ( $v ) {
+			return in_array( $v, array( 'haut', 'centre', 'bas' ), true ) ? $v : 'centre';
+		},
+	) );
+	$wp_customize->add_control( 'vr_hero_position', array(
+		'label'       => 'Point fort de la photo',
+		'description' => 'La partie de la photo à garder quand l\'écran est plus large qu\'elle. Choisissez « bas » si la piscine est en bas de la photo.',
+		'section'     => 'vr_hero',
+		'type'        => 'select',
+		'choices'     => array( 'haut' => 'Le haut de la photo', 'centre' => 'Le centre', 'bas' => 'Le bas de la photo' ),
+	) );
 
 	$champ( 'vr_hero_surtitre', 'Petite ligne au-dessus du titre', 'vr_hero' );
 	$champ( 'vr_hero_titre', 'Grand titre', 'vr_hero', 'textarea' );

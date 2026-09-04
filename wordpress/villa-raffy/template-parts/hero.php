@@ -20,8 +20,21 @@ $vr_preuves  = array(
 
 <section class="vr-hero" id="accueil">
 
-	<div class="vr-hero__bg" id="vr-hero-bg">
-		<?php vr_image( $vr_image_id, 'vr-hero', 'La villa', '' ); ?>
+	<?php
+	// Point fort de la photo : quelle partie garder quand l'écran est plus large que l'image.
+	$vr_positions = array( 'haut' => '50% 18%', 'centre' => '50% 50%', 'bas' => '50% 82%' );
+	$vr_position  = get_theme_mod( 'vr_hero_position', 'centre' );
+	$vr_position  = isset( $vr_positions[ $vr_position ] ) ? $vr_positions[ $vr_position ] : $vr_positions['centre'];
+	?>
+	<div class="vr-hero__bg" id="vr-hero-bg" style="--vr-hero-pos:<?php echo esc_attr( $vr_position ); ?>">
+		<?php
+		if ( $vr_image_id && wp_get_attachment_image_url( $vr_image_id, 'vr-hero' ) ) {
+			// La grande image se charge en priorité : c'est la première chose que l'on voit.
+			echo wp_get_attachment_image( $vr_image_id, 'vr-hero', false, array( 'loading' => 'eager', 'fetchpriority' => 'high', 'decoding' => 'async' ) );
+		} else {
+			vr_image( 0, 'vr-hero', 'La villa', '' );
+		}
+		?>
 	</div>
 	<div class="vr-hero__veil"></div>
 

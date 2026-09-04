@@ -18,6 +18,7 @@
 	var PanelBody = wp.components.PanelBody;
 	var TextControl = wp.components.TextControl;
 	var TextareaControl = wp.components.TextareaControl;
+	var SelectControl = wp.components.SelectControl;
 	var Button = wp.components.Button;
 	var Notice = wp.components.Notice;
 	var ServerSideRender = wp.serverSideRender;
@@ -117,8 +118,25 @@
 						return;
 					}
 
-					var Composant = 'textarea' === champ.type ? TextareaControl : TextControl;
 					var affiche = ( undefined !== valeur && '' !== valeur ) ? valeur : ( champ.defaut || '' );
+
+					if ( 'select' === champ.type && champ.options ) {
+						controles.push( el( SelectControl, {
+							key: attr,
+							label: champ.label,
+							help: champ.aide || undefined,
+							value: affiche,
+							options: Object.keys( champ.options ).map( function ( k ) {
+								return { value: k, label: champ.options[ k ] };
+							} ),
+							onChange: changer,
+							__nextHasNoMarginBottom: true,
+							__next40pxDefaultSize: true
+						} ) );
+						return;
+					}
+
+					var Composant = 'textarea' === champ.type ? TextareaControl : TextControl;
 
 					controles.push( el( Composant, {
 						key: attr,
